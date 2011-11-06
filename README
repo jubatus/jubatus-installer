@@ -1,0 +1,7 @@
+usage:
+0. install gcc and git
+1. add jubatus.profile to your .XXshrc or source jubatus.profile
+2. run install.sh
+
+if you want to install jubatus another directory,
+fix $PREFIX and jubatus.profile.

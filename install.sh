@@ -8,6 +8,7 @@ MSGP_VER="0.1.10"
 GLOG_VER="0.3.1"
 UX_VER="0.1.6"
 MECAB_VER="0.98"
+IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.3.3"
 ZKC_VER="2.2.0"
 PKG_VER="0.18"
@@ -18,6 +19,7 @@ wget http://pypi.python.org/packages/source/m/msgpack-python/msgpack-python-${MS
 wget http://google-glog.googlecode.com/files/glog-${GLOG_VER}-1.tar.gz
 wget http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2
 wget http://sourceforge.net/projects/mecab/files/mecab/${MECAB_VER}/mecab-${MECAB_VER}.tar.gz
+wget http://sourceforge.net/projects/mecab/files/mecab-ipadic/${IPADIC_VER}/mecab-ipadic-${IPADIC_VER}.tar.gz
 wget http://hypertable.org/pub/re2.tgz
 wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
 wget http://pkgconfig.freedesktop.org/releases/pkgconfig-${PKG_VER}.tar.gz
@@ -31,6 +33,7 @@ tar zxf msgpack-python-${MSGP_VER}.tar.gz
 tar zxf glog-${GLOG_VER}-1.tar.gz
 tar jxf ux-${UX_VER}.tar.bz2
 tar zxf mecab-${MECAB_VER}.tar.gz
+tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
 tar zxf re2.tgz
 tar zxf zookeeper-${ZK_VER}.tar.gz
 tar zxf pkgconfig-${PKG_VER}.tar.gz
@@ -69,7 +72,12 @@ cd ../ux-${UX_VER}
 ./waf install
 
 cd ../mecab-${MECAB_VER}
-./configure --prefix=${PREFIX}
+./configure --prefix=${PREFIX} --enable-utf8-only
+make
+make install
+
+cd ../mecab-ipadic-${IPADIC_VER}
+./configure --prefix=${PREFIX} --with-charset=utf8
 make
 make install
 
@@ -89,7 +97,7 @@ cd ../../../pficommon
 ./waf install
 
 cd ../jubatus
-./waf configure --prefix=${PREFIX}
+./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab
 ./waf build --checkall
 ./waf install
 

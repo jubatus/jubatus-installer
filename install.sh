@@ -32,7 +32,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     wget http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
     wget http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
     wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-    wget http://pkgconfig.freedesktop.org/releases/pkgconfig-${PKG_VER}.tar.gz
+    wget http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
 
     hg clone https://re2.googlecode.com/hg re2
 

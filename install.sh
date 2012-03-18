@@ -1,13 +1,11 @@
 #/bin/sh
 
-PYTHON_VER="2.7.2"
 MSG_VER="0.5.7"
 GLOG_VER="0.3.1"
 UX_VER="0.1.8"
 MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.3.4"
-PKG_VER="0.26"
 
 PREFIX="${HOME}/local"
 
@@ -25,14 +23,12 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     mkdir download
     cd download
 
-    wget http://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tgz
     wget http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
     wget http://google-glog.googlecode.com/files/glog-${GLOG_VER}-1.tar.gz
     wget http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2
     wget http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
     wget http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
     wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-    wget http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
 
     hg clone https://re2.googlecode.com/hg re2
 
@@ -46,31 +42,20 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
     cd download
 
-    tar zxf Python-${PYTHON_VER}.tgz
     tar zxf msgpack-${MSG_VER}.tar.gz
     tar zxf glog-${GLOG_VER}-1.tar.gz
     tar jxf ux-${UX_VER}.tar.bz2
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
-    tar zxf pkgconfig-${PKG_VER}.tar.gz
 
     mkdir -p ${PREFFIX}
 
     LD_LIBRARY_PATH=${PREFIX}/lib
     export LD_LIBRARY_PATH
 
-    cd Python-${PYTHON_VER}
-    ./configure --prefix=${PREFIX}
-    make
-    make install
 
-    cd ../pkgconfig-${PKG_VER}
-    ./configure --prefix=${PREFIX}
-    make
-    make install
-
-    cd ../msgpack-${MSG_VER}
+    cd ./msgpack-${MSG_VER}
     ./configure --prefix=${PREFIX}
     make
     make install

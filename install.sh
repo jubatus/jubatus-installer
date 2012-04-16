@@ -6,6 +6,7 @@ UX_VER="0.1.8"
 MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.3.4"
+EVENT_VER="2.0.18"
 
 PREFIX="${HOME}/local"
 
@@ -29,7 +30,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     wget http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
     wget http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
     wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-
+    wget https://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
     hg clone https://re2.googlecode.com/hg re2
 
     git clone git://github.com/pfi/pficommon.git
@@ -48,6 +49,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
+    tar zxf libevent-${EVENT_VER}-stable.tar.gz
 
     mkdir -p ${PREFFIX}
 
@@ -82,6 +84,11 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd ../re2
     sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
+    make
+    make install
+
+    cd ../libevent-${EVENT_VER}-stable
+    ./configure --prefix=${PREFIX}
     make
     make install
 

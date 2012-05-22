@@ -13,7 +13,7 @@ PREFIX="${HOME}/local"
 while getopts dip: OPT
 do
   case $OPT in
-    "d" ) DWONLOAD_ONLY="TRUE" ;;
+    "d" ) DOWNLOAD_ONLY="TRUE" ;;
     "i" ) INSTALL_ONLY="TRUE" ;;
     "p" ) PREFIX="$OPTARG" ;;
   esac
@@ -54,7 +54,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf libevent-${EVENT_VER}-stable.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
 
-    mkdir -p ${PREFFIX}
+    mkdir -p ${PREFIX}
 
     LD_LIBRARY_PATH=${PREFIX}/lib
     export LD_LIBRARY_PATH

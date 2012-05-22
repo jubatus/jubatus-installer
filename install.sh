@@ -35,8 +35,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     hg clone https://re2.googlecode.com/hg re2
 
-    git clone git://github.com/pfi/pficommon.git
-    git clone git://github.com/jubatus/jubatus.git
+    git clone https://github.com/pfi/pficommon.git
+    git clone https://github.com/jubatus/jubatus.git
 
   cd ..
 fi

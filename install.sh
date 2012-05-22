@@ -7,7 +7,7 @@ MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.3.4"
 EVENT_VER="2.0.18"
-
+PKG_VER="0.26"
 PREFIX="${HOME}/local"
 
 while getopts dip: OPT
@@ -31,6 +31,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     wget http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
     wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
     wget https://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
+    wget http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
+
     hg clone https://re2.googlecode.com/hg re2
 
     git clone git://github.com/pfi/pficommon.git
@@ -50,6 +52,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf libevent-${EVENT_VER}-stable.tar.gz
+    tar zxf pkg-config-${PKG_VER}.tar.gz
 
     mkdir -p ${PREFFIX}
 
@@ -57,7 +60,12 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export LD_LIBRARY_PATH
 
 
-    cd ./msgpack-${MSG_VER}
+    cd ./pkg-config-${PKG_VER}
+    ./configure --prefix=${PREFIX}
+    make
+    make install
+
+    cd ../msgpack-${MSG_VER}
     ./configure --prefix=${PREFIX}
     make
     make install

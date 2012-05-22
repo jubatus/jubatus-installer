@@ -1,17 +1,24 @@
 see http://jubat.us/
 
 usage:
+------
 0. install git, hg and gcc 
 1. add jubatus.profile to your .xshrc or source jubatus.profile
 2. move install.sh directory
 3. run install.sh
+
+if you want to use python client,
+
+4. run install_python.sh
 
 install.sh -dip
  d : only download
  i : only install
  p : install path
 
-for example,
+example:
+---------
+
 # ./install.sh -i -p /usr/local/
 
 if you want to install jubatus another directory,

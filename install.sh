@@ -7,7 +7,7 @@ MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.3.4"
 EVENT_VER="2.0.18"
-PKG_VER="0.26"
+PKG_VER="0.25"
 PREFIX="${HOME}/local"
 
 while getopts dip: OPT

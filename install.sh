@@ -1,12 +1,12 @@
 #/bin/sh
 
 MSG_VER="0.5.7"
-GLOG_VER="0.3.1"
+GLOG_VER="0.3.2"
 UX_VER="0.1.8"
 MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
-ZK_VER="3.3.4"
-EVENT_VER="2.0.18"
+ZK_VER="3.4.3"
+EVENT_VER="2.0.19"
 PKG_VER="0.25"
 PREFIX="${HOME}/local"
 
@@ -19,26 +19,33 @@ do
   esac
 done
 
+download_tgz(){
+    filename=${1##*/}
+    if [ ! -f $filename ]; then
+	wget $1
+    fi
+}
+
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     mkdir download
     cd download
 
-    wget http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
-    wget http://google-glog.googlecode.com/files/glog-${GLOG_VER}-1.tar.gz
-    wget http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2
-    wget http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
-    wget http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
-    wget http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-    wget https://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
-    wget http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
+    download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
+    download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz
+    download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2
+    download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
+    download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
+    download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
+    download_tgz http://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
+    download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
 
     hg clone https://re2.googlecode.com/hg re2
 
     git clone https://github.com/pfi/pficommon.git
     git clone https://github.com/jubatus/jubatus.git
 
-  cd ..
+    cd ..
 fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]

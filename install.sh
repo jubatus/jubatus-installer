@@ -53,7 +53,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
-    tar zxf glog-${GLOG_VER}-1.tar.gz
+    tar zxf glog-${GLOG_VER}.tar.gz
     tar jxf ux-${UX_VER}.tar.bz2
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz

@@ -1,15 +1,16 @@
+JUBATUS_HOME=$HOME/local
 
-PATH=$HOME/local/bin:$PATH
+PATH=$JUBATUS_HOME/bin:$PATH
 
-CPLUS_INCLUDE_PATH=$HOME/local/include
+CPLUS_INCLUDE_PATH=$JUBATUS_HOME/include
 export CPLUS_INCLUDE_PATH
 
 export PATH
 
-export set LDFLAGS=-L$HOME/local/lib
+export set LDFLAGS=-L$JUBATUS_HOME/lib
 
-LD_LIBRARY_PATH=$HOME/local/lib
+LD_LIBRARY_PATH=$JUBATUS_HOME/lib
 export LD_LIBRARY_PATH
 
-PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig
+PKG_CONFIG_PATH=$JUBATUS_HOME/lib/pkgconfig
 export PKG_CONFIG_PATH

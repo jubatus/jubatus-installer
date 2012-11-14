@@ -8,6 +8,7 @@ IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.4.3"
 EVENT_VER="2.0.19"
 PKG_VER="0.25"
+RE2_VER="20121029"
 PREFIX="${HOME}/local"
 
 while getopts dip: OPT
@@ -47,15 +48,11 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
     download_tgz http://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
-
-    hg clone https://re2.googlecode.com/hg re2
-    check_result $?
+    download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
     git clone https://github.com/pfi/pficommon.git
-    check_result $?
 
     git clone https://github.com/jubatus/jubatus.git
-    check_result $?
 
     cd ..
 fi
@@ -72,6 +69,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf libevent-${EVENT_VER}-stable.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
+    tar zxf re2-${RE2_VER}.tgz
 
     mkdir -p ${PREFIX}
 

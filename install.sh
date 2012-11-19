@@ -35,8 +35,18 @@ check_result(){
     fi
 }
 
+check_command(){
+    if ! type $1 > /dev/null ; then
+        echo "command not found: $1"
+        exit
+    fi
+}
+
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
+    check_command wget
+    check_command git
+
     mkdir -p download
     cd download
 
@@ -59,6 +69,11 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
+    check_command g++
+    check_command make
+    check_command tar
+    check_command python
+
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz

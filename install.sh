@@ -8,6 +8,7 @@ IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.4.3"
 EVENT_VER="2.0.19"
 PKG_VER="0.25"
+RE2_VER="20121029"
 PREFIX="${HOME}/local"
 
 while getopts dip: OPT
@@ -23,12 +24,30 @@ download_tgz(){
     filename=${1##*/}
     if [ ! -f $filename ]; then
 	wget $1
+        check_result $?
+    fi
+}
+
+check_result(){
+    if [ $1 -ne 0 ]; then
+        echo "ERROR"
+        exit
+    fi
+}
+
+check_command(){
+    if ! type $1 > /dev/null ; then
+        echo "command not found: $1"
+        exit
     fi
 }
 
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
-    mkdir download
+    check_command wget
+    check_command git
+
+    mkdir -p download
     cd download
 
     download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
@@ -39,10 +58,10 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
     download_tgz http://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
-
-    hg clone https://re2.googlecode.com/hg re2
+    download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
     git clone https://github.com/pfi/pficommon.git
+
     git clone https://github.com/jubatus/jubatus.git
 
     cd ..
@@ -50,6 +69,11 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
+    check_command g++
+    check_command make
+    check_command tar
+    check_command python
+
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
@@ -60,6 +84,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf libevent-${EVENT_VER}-stable.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
+    tar zxf re2-${RE2_VER}.tgz
 
     mkdir -p ${PREFIX}
 
@@ -68,58 +93,48 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
 
     cd ./pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX}
-    make
-    make install
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../msgpack-${MSG_VER}
-    ./configure --prefix=${PREFIX}
-    make
-    make install
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../glog-${GLOG_VER}
-    ./configure --prefix=${PREFIX}
-    make
-    make install
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../ux-${UX_VER}
-    ./waf configure --prefix=${PREFIX}
-    ./waf build
-    ./waf install
+    ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
+    check_result $?
 
     cd ../mecab-${MECAB_VER}
-    ./configure --prefix=${PREFIX} --enable-utf8-only
-    make
-    make install
+    ./configure --prefix=${PREFIX} --enable-utf8-only && make && make install
+    check_result $?
 
     cd ../mecab-ipadic-${IPADIC_VER}
-    ./configure --prefix=${PREFIX} --with-charset=utf8
-    make
-    make install
+    ./configure --prefix=${PREFIX} --with-charset=utf8 && make && make install
+    check_result $?
 
     cd ../re2
     sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
-    make
-    make install
+    make && make install
+    check_result $?
 
     cd ../libevent-${EVENT_VER}-stable
-    ./configure --prefix=${PREFIX}
-    make
-    make install
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../zookeeper-${ZK_VER}/src/c
-    ./configure --prefix=${PREFIX}
-    make
-    make install
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../../../pficommon
-    ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX}
-    ./waf build
-    ./waf install
+    ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX} && ./waf build && ./waf install
+    check_result $?
 
     cd ../jubatus
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
-    ./waf build --checkall
-    ./waf install
+    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper && ./waf build --checkall && ./waf install
+    check_result $?
 fi
 

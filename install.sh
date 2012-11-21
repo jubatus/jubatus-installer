@@ -61,6 +61,9 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
     git clone https://github.com/pfi/pficommon.git
+    cd pficommon
+    git checkout 10b1ba95628b0078984d12300f9a9deb94470952
+    cd ..
 
     git clone https://github.com/jubatus/jubatus.git
 
@@ -69,6 +72,10 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
+    if [ "$JUBATUS_HOME" = "" ]; then
+        echo "JUBATUS_HOME is not set. Please \"source jubatus.profile\" first."
+        exit
+    fi
     check_command g++
     check_command make
     check_command tar

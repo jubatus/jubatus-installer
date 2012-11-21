@@ -72,6 +72,10 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
+    if [ "$JUBATUS_HOME" = "" ]; then
+        echo "JUBATUS_HOME is not set. Please \"source jubatus.profile\" first."
+        exit
+    fi
     check_command g++
     check_command make
     check_command tar

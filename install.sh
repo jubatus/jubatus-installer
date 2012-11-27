@@ -120,7 +120,9 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     cd ../mecab-ipadic-${IPADIC_VER}
-    ./configure --prefix=${PREFIX} --with-charset=utf8 && make && make install
+    MECAB_CONFIG="$PREFIX/bin/mecab-config"
+    MECAB_DICDIR=`$MECAB_CONFIG --dicdir`
+    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make && make install
     check_result $?
 
     cd ../re2

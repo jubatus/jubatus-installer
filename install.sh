@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/bash
 
 MSG_VER="0.5.7"
 GLOG_VER="0.3.2"
@@ -31,17 +31,19 @@ download_tgz(){
 check_result(){
     if [ $1 -ne 0 ]; then
         echo "ERROR"
-        exit
+        exit 1
     fi
 }
 
 check_command(){
     if ! type $1 > /dev/null ; then
         echo "command not found: $1"
-        exit
+        exit 1
     fi
 }
 
+export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log 
+(
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
@@ -61,11 +63,14 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
     git clone https://github.com/pfi/pficommon.git
+    check_result $?
     cd pficommon
     git checkout 10b1ba95628b0078984d12300f9a9deb94470952
+    check_result $?
     cd ..
 
     git clone https://github.com/jubatus/jubatus.git
+    check_result $?
 
     cd ..
 fi
@@ -74,7 +79,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
     if [ "$JUBATUS_HOME" = "" ]; then
         echo "JUBATUS_HOME is not set. Please \"source jubatus.profile\" first."
-        exit
+        exit 1
     fi
     check_command g++
     check_command make
@@ -147,3 +152,12 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 fi
 
+) 2>&1 | tee $INSTALL_LOG
+
+# to avoid getting the exit status of "tee" command
+status=${PIPESTATUS[0]}
+
+if [ "$status" -ne 0 ]; then
+  echo "all messages above are saved in \"$INSTALL_LOG\""
+  exit $status
+fi

@@ -65,6 +65,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     git checkout 10b1ba95628b0078984d12300f9a9deb94470952
     cd ..
 
+    git clone https://github.com/jubatus/jubatus-mpio.git
+    git clone https://github.com/jubatus/jubatus-msgpack-rpc.git
     git clone https://github.com/jubatus/jubatus.git
 
     cd ..
@@ -140,6 +142,14 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd ../../../pficommon
     ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX} && ./waf build && ./waf install
+    check_result $?
+
+    cd ../jubatus-mpio
+    ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
+
+    cd ../jubatus-msgpack-rpc
+    ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
     cd ../jubatus

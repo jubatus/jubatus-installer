@@ -62,7 +62,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     git clone https://github.com/pfi/pficommon.git
     cd pficommon
-    git checkout 10b1ba95628b0078984d12300f9a9deb94470952
+    git checkout 8fde51454af897cc971bab9033e217ff83b12f78
     cd ..
 
     git clone https://github.com/jubatus/jubatus.git

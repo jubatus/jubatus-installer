@@ -148,9 +148,10 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus-msgpack-rpc
+    cd ../jubatus-msgpack-rpc/cpp
     ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
     check_result $?
+    cd ..
 
     cd ../jubatus
     ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper && ./waf build --checkall && ./waf install

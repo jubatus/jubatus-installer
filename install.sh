@@ -61,7 +61,6 @@ check_command(){
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
-    check_command git
 
     mkdir -p download
     cd download

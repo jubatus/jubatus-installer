@@ -9,14 +9,19 @@ ZK_VER="3.4.3"
 EVENT_VER="2.0.19"
 PKG_VER="0.25"
 RE2_VER="20121029"
+PFICOMMON_VER="8fde51454af897cc971bab9033e217ff83b12f78"
+JUBATUS_MPIO_VER="master"
+JUBATUS_MSGPACK_RPC_VER="master"
+JUBATUS_VER="master"
 PREFIX="${HOME}/local"
 
-while getopts dip: OPT
+while getopts dip:D OPT
 do
   case $OPT in
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
     "i" ) INSTALL_ONLY="TRUE" ;;
     "p" ) PREFIX="$OPTARG" ;;
+    "D" ) JUBATUS_MPIO_VER="develop"; JUBATUS_MSGPACK_RPC_VER="develop"; JUBATUS_VER="develop" ;;
   esac
 done
 
@@ -24,6 +29,17 @@ download_tgz(){
     filename=${1##*/}
     if [ ! -f $filename ]; then
 	wget $1
+        check_result $?
+    fi
+}
+
+download_github_tgz(){
+    filename=$2-$3.tar.gz
+    if [ -f $filename -a \( $3 == "master" -o $3 == "develop" \) ]; then
+        rm $filename
+    fi
+    if [ ! -f $filename ]; then
+        wget https://github.com/$1/$2/archive/$3.tar.gz -O $2-$3.tar.gz
         check_result $?
     fi
 }
@@ -60,14 +76,10 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
-    git clone https://github.com/pfi/pficommon.git
-    cd pficommon
-    git checkout 10b1ba95628b0078984d12300f9a9deb94470952
-    cd ..
-
-    git clone https://github.com/jubatus/jubatus-mpio.git
-    git clone https://github.com/jubatus/jubatus-msgpack-rpc.git
-    git clone https://github.com/jubatus/jubatus.git
+    download_github_tgz pfi pficommon ${PFICOMMON_VER}
+    download_github_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER}
+    download_github_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
+    download_github_tgz jubatus jubatus ${JUBATUS_VER}
 
     cd ..
 fi
@@ -94,6 +106,11 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf libevent-${EVENT_VER}-stable.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
     tar zxf re2-${RE2_VER}.tgz
+
+    tar zxf pficommon-${PFICOMMON_VER}.tar.gz
+    tar zxf jubatus-mpio-${JUBATUS_MPIO_VER}.tar.gz
+    tar zxf jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
     mkdir -p ${PREFIX}
 
@@ -140,20 +157,20 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../../../pficommon
+    cd ../../../pficommon-${PFICOMMON_VER}
     ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX} && ./waf build && ./waf install
     check_result $?
 
-    cd ../jubatus-mpio
+    cd ../jubatus-mpio-${JUBATUS_MPIO_VER}
     ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus-msgpack-rpc/cpp
+    cd ../jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}/cpp
     ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
     check_result $?
     cd ..
 
-    cd ../jubatus
+    cd ../jubatus-${JUBATUS_VER}
     ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper && ./waf build --checkall && ./waf install
     check_result $?
 fi

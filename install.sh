@@ -6,7 +6,6 @@ UX_VER="0.1.8"
 MECAB_VER="0.99"
 IPADIC_VER="2.7.0-20070801"
 ZK_VER="3.4.3"
-EVENT_VER="2.0.19"
 PKG_VER="0.25"
 RE2_VER="20121029"
 PFICOMMON_VER="8fde51454af897cc971bab9033e217ff83b12f78"
@@ -71,7 +70,6 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
     download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-    download_tgz http://github.com/downloads/libevent/libevent/libevent-${EVENT_VER}-stable.tar.gz
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
@@ -102,7 +100,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
-    tar zxf libevent-${EVENT_VER}-stable.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
     tar zxf re2-${RE2_VER}.tgz
 
@@ -146,10 +143,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     cd ../re2
     sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
     make && make install
-    check_result $?
-
-    cd ../libevent-${EVENT_VER}-stable
-    ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
     cd ../zookeeper-${ZK_VER}/src/c

@@ -15,6 +15,7 @@ install.sh -dip
  d : only download
  i : only install
  p : install path
+ D : install develop branch
 
 example:
 ---------

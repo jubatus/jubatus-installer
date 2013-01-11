@@ -9,6 +9,7 @@ ZK_VER="3.4.3"
 EVENT_VER="2.0.19"
 PKG_VER="0.25"
 RE2_VER="20121029"
+PFICOMMON_HASH="8fde51454af897cc971bab9033e217ff83b12f78"
 PREFIX="${HOME}/local"
 
 while getopts dip: OPT
@@ -62,7 +63,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     git clone https://github.com/pfi/pficommon.git
     cd pficommon
-    git checkout 10b1ba95628b0078984d12300f9a9deb94470952
+    git checkout $PFICOMMON_HASH
     cd ..
 
     git clone https://github.com/jubatus/jubatus.git

@@ -8,7 +8,8 @@ usage:
 
 if you want to use python client,
 
-3. run install_python.sh
+3. install python-dev
+4. run install_python.sh
 
 install.sh -dip
  d : only download

@@ -10,7 +10,7 @@ PKG_VER="0.25"
 RE2_VER="20121029"
 PFICOMMON_VER="8fde51454af897cc971bab9033e217ff83b12f78"
 JUBATUS_MPIO_VER="0.4.1"
-JUBATUS_MSGPACK_RPC_VER="0.4.0"
+JUBATUS_MSGPACK_RPC_VER="0.4.0-p1"
 JUBATUS_VER="0.4.1"
 PREFIX="${HOME}/local"
 
@@ -20,7 +20,7 @@ do
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
     "i" ) INSTALL_ONLY="TRUE" ;;
     "p" ) PREFIX="$OPTARG" ;;
-    "D" ) JUBATUS_MPIO_VER="develop"; JUBATUS_MSGPACK_RPC_VER="develop"; JUBATUS_VER="develop" ;;
+    "D" ) JUBATUS_VER="develop" ;;
   esac
 done
 
@@ -74,8 +74,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
 
     download_github_tgz pfi pficommon ${PFICOMMON_VER}
-    download_github_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER}
-    download_github_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
+    download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
+    download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
     download_github_tgz jubatus jubatus ${JUBATUS_VER}
 
     cd ..
@@ -104,8 +104,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf re2-${RE2_VER}.tgz
 
     tar zxf pficommon-${PFICOMMON_VER}.tar.gz
-    tar zxf jubatus-mpio-${JUBATUS_MPIO_VER}.tar.gz
-    tar zxf jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
+    tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
     mkdir -p ${PREFIX}
@@ -153,14 +153,13 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX} && ./waf build && ./waf install
     check_result $?
 
-    cd ../jubatus-mpio-${JUBATUS_MPIO_VER}
-    ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
+    cd ../jubatus_mpio-${JUBATUS_MPIO_VER}
+    ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}/cpp
-    ./bootstrap && ./configure --prefix=${PREFIX} && make && make install
+    cd ../jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}
+    ./configure --prefix=${PREFIX} && make && make install
     check_result $?
-    cd ..
 
     cd ../jubatus-${JUBATUS_VER}
     ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper && ./waf build --checkall && ./waf install

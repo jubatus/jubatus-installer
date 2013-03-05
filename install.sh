@@ -109,9 +109,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export PATH=${PREFIX}/bin:$PATH
     export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
     export LDFLAGS="-L${PREFIX}/lib"
-    export CFLAGS="-I${PREFIX}/include"
-    export CPPFLAGS="-I${PREFIX}/include"
-    export CXXFLAGS="-I${PREFIX}/include"
+    export C_INCLUDE_PATH="${PREFIX}/include"
+    export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
     cd ./pkg-config-${PKG_VER}
     ./configure --prefix=${PREFIX} && make && make install

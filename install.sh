@@ -111,6 +111,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export PATH=${PREFIX}/bin:$PATH
     export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
     export LDFLAGS="-L${PREFIX}/lib"
+    export LD_LIBRARY_PATH="${PREFIX}/lib"
     export C_INCLUDE_PATH="${PREFIX}/include"
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 

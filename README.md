@@ -26,7 +26,8 @@ To install Jubatus, run:
 $ ./install.sh
 ```
 
-Jubatus is installed in `$HOME/local` by default. If you want to another directory, specify directory using `-p` option. For example:
+Jubatus is installed in `$HOME/local` by default. If you want to another directory, specify directory using `-p` option.
+For example:
 
 ```
 # ./install.sh -p /usr/local
@@ -53,8 +54,8 @@ or
 
 ```
 $ source $PREFIX/share/jubatus/jubatus.profile
-
 ```
+
 
 If you want to use python client, run:
 

@@ -57,13 +57,25 @@ check_command(){
     fi
 }
 
+makedir() {
+    if [ -d $1 ]; then
+        if [ ! -w $1 ]; then
+            echo "unwritable directory: $1"
+            exit 1
+        fi
+    else
+        mkdir -p $1
+        check_result $?
+    fi
+}
+
 export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log 
 (
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
 
-    mkdir -p download
+    makedir download
     cd download
 
     download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
@@ -106,12 +118,13 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
-    mkdir -p ${PREFIX}
+    makedir ${PREFIX}
 
     export PATH=${PREFIX}/bin:$PATH
     export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
     export LDFLAGS="-L${PREFIX}/lib"
     export LD_LIBRARY_PATH="${PREFIX}/lib"
+    export DYLD_LIBRARY_PATH="${PREFIX}/lib"
     export C_INCLUDE_PATH="${PREFIX}/include"
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 

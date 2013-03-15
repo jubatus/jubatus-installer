@@ -1,0 +1,19 @@
+2013-03-15 version 0.4.2:
+
+	* Install Jubatus version 0.4.2
+	* Fix README
+	* Update libraries version
+	* Download from download.jubat.us
+	* Use C_INCLUDE_PATH/CPLUS_INCLUDE_PATH instead of CFLAGS
+	* Add LD_LIBRARY_PATH
+	* Add LYLD_LIBRARY_PATH for Mac environment
+	* Check writability to directories used
+	* Save install log
+
+2013-02-15 version 0.4.1
+
+	* Install Jubatus version 0.4.1
+
+2013-01-12 version 0.4.0
+
+	* Install Jubatus version 0.4.0

@@ -57,7 +57,7 @@ download_tgz(){
         wget $1
         check_result $?
     fi
-    echo "$sum  $filename" | sha1sum -c /dev/stdin
+    echo "$sum  $filename" | $shasum -c /dev/stdin
     check_result $?
 }
 
@@ -72,7 +72,7 @@ download_github_tgz(){
         check_result $?
     fi
     if [ $3 != "master" -a $3 != "develop" ]; then
-        echo "$sum  $filename" | sha1sum -c /dev/stdin
+        echo "$sum  $filename" | $shasum -c /dev/stdin
         check_result $?
     fi
 }
@@ -87,6 +87,19 @@ check_result(){
 check_command(){
     if ! type $1 > /dev/null ; then
         echo "command not found: $1"
+        exit 1
+    fi
+}
+
+check_shasum_command() {
+    if type sha1sum > /dev/null 2>&1 ; then
+        shasum="sha1sum"
+    fi
+    if type shasum > /dev/null 2>&1 ; then
+        shasum="shasum"
+    fi
+    if [ -z $shasum ]; then
+        echo "command not found: sha1sum, shasum"
         exit 1
     fi
 }
@@ -108,7 +121,7 @@ export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
-    check_command sha1sum
+    check_shasum_command
 
     makedir download
     cd download

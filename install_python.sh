@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 PYTHON_VER="2.7.2"
 PREFIX="${HOME}/local"
@@ -18,6 +18,7 @@ PREFIX="${HOME}/local"
   make install
 
   cd ..
+  export PATH=${PREFIX}/bin/:$PATH
   python ez_setup.py
   easy_install pip
   pip install jubatus

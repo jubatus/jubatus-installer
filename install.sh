@@ -1,18 +1,44 @@
 #!/bin/bash
 
-MSG_VER="0.5.7"
-GLOG_VER="0.3.3"
-UX_VER="0.1.9"
-MECAB_VER="0.996"
-IPADIC_VER="2.7.0-20070801"
-ZK_VER="3.4.5"
-PKG_VER="0.25"
-RE2_VER="20130115"
-PFICOMMON_VER="4e34ef44b61b40a1eab37879487f9145549b7b10"
-JUBATUS_MPIO_VER="0.4.1"
-JUBATUS_MSGPACK_RPC_VER="0.4.1"
-JUBATUS_VER="0.4.2"
 PREFIX="${HOME}/local"
+
+JUBATUS_VER="0.4.3"
+JUBATUS_SUM="c4571dafa992443bc5dc9600daeb1452776524c2"
+
+
+MSG_VER="0.5.7"
+MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
+
+GLOG_VER="0.3.3"
+GLOG_SUM="ed40c26ecffc5ad47c618684415799ebaaa30d65"
+
+UX_VER="0.1.9"
+UX_SUM="34d3372b4add8bf4e9e49a2f786b575b8372793f"
+
+MECAB_VER="0.996"
+MECAB_SUM="15baca0983a61c1a49cffd4a919463a0a39ef127"
+
+IPADIC_VER="2.7.0-20070801"
+IPADIC_SUM="0d9d021853ba4bb4adfa782ea450e55bfe1a229b"
+
+ZK_VER="3.4.5"
+ZK_SUM="fd921575e02478909557034ea922de871926efc7"
+
+PKG_VER="0.25"
+PKG_SUM="8922aeb4edeff7ed554cc1969cbb4ad5a4e6b26e"
+
+RE2_VER="20130115"
+RE2_SUM="71f1eac7fb83393faedc966fb9cdb5ba1057d85f"
+
+PFICOMMON_VER="4734013fa1f997a72ff7f4673baf8dcc26f82d83"
+PFICOMMON_SUM="0527e7061fb03bc25fbdb120a05d9eaebe03c3bd"
+
+JUBATUS_MPIO_VER="0.4.2"
+JUBATUS_MPIO_SUM="e68d0777b28461a30a3612f9f5f1b4aa9408ac6c"
+
+JUBATUS_MSGPACK_RPC_VER="0.4.1"
+JUBATUS_MSGPACK_RPC_SUM="b3711749f1f53fce8de9fab6aaa89cd0b3621833"
+
 
 while getopts dip:D OPT
 do
@@ -26,19 +52,27 @@ done
 
 download_tgz(){
     filename=${1##*/}
+    sum=$2
     if [ ! -f $filename ]; then
-	wget $1
+        wget $1
         check_result $?
     fi
+    echo "$sum  $filename" | $shasum -c /dev/stdin
+    check_result $?
 }
 
 download_github_tgz(){
     filename=$2-$3.tar.gz
+    sum=$4
     if [ -f $filename -a \( $3 == "master" -o $3 == "develop" \) ]; then
         rm $filename
     fi
     if [ ! -f $filename ]; then
         wget https://github.com/$1/$2/archive/$3.tar.gz -O $2-$3.tar.gz
+        check_result $?
+    fi
+    if [ $3 != "master" -a $3 != "develop" ]; then
+        echo "$sum  $filename" | $shasum -c /dev/stdin
         check_result $?
     fi
 }
@@ -53,6 +87,19 @@ check_result(){
 check_command(){
     if ! type $1 > /dev/null ; then
         echo "command not found: $1"
+        exit 1
+    fi
+}
+
+check_shasum_command() {
+    if type sha1sum > /dev/null 2>&1 ; then
+        shasum="sha1sum"
+    fi
+    if type shasum > /dev/null 2>&1 ; then
+        shasum="shasum"
+    fi
+    if [ -z $shasum ]; then
+        echo "command not found: sha1sum, shasum"
         exit 1
     fi
 }
@@ -74,23 +121,24 @@ export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
+    check_shasum_command
 
     makedir download
     cd download
 
-    download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz
-    download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz
-    download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2
-    download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz
-    download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz
-    download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz
-    download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz
-    download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz
+    download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
+    download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz ${GLOG_SUM}
+    download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2 ${UX_SUM}
+    download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz ${MECAB_SUM}
+    download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz ${IPADIC_SUM}
+    download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
+    download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
+    download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz ${RE2_SUM}
 
-    download_github_tgz pfi pficommon ${PFICOMMON_VER}
-    download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
-    download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
-    download_github_tgz jubatus jubatus ${JUBATUS_VER}
+    download_github_tgz pfi pficommon ${PFICOMMON_VER} ${PFICOMMON_SUM}
+    download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
+    download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz ${JUBATUS_MSGPACK_RPC_SUM}
+    download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
     cd ..
 fi

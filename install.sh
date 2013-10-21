@@ -30,6 +30,9 @@ PKG_SUM="8922aeb4edeff7ed554cc1969cbb4ad5a4e6b26e"
 RE2_VER="20130115"
 RE2_SUM="71f1eac7fb83393faedc966fb9cdb5ba1057d85f"
 
+ONIG_VER="5.9.4"
+ONIG_SUM="c7ab81fd2aa6ecd42d146a33b48e19e552fca75b"
+
 PFICOMMON_VER="d44b82d315ecde6a713b801e81b1d7ad603539ec"
 PFICOMMON_SUM="c9b0fe99f5a6181694758207cbe8d2c50f7bc2f1"
 
@@ -134,6 +137,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
     download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz ${RE2_SUM}
+    download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
 
     download_github_tgz pfi pficommon ${PFICOMMON_VER} ${PFICOMMON_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
@@ -160,6 +164,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
     tar zxf re2-${RE2_VER}.tgz
+    tar zxf onig-${ONIG_VER}.tar.gz
 
     tar zxf pficommon-${PFICOMMON_VER}.tar.gz
     tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
@@ -205,6 +210,10 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     cd ../re2
     sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
     make && make install
+    check_result $?
+
+    cd ../onig-${ONIG_VER}
+    ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
     cd ../zookeeper-${ZK_VER}/src/c

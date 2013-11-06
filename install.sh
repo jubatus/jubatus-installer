@@ -43,13 +43,14 @@ JUBATUS_MSGPACK_RPC_VER="0.4.2"
 JUBATUS_MSGPACK_RPC_SUM="d24d43678c5d468ebad0dbb229df1c30a9de229e"
 
 
-while getopts dip:D OPT
+while getopts dip:Dr OPT
 do
   case $OPT in
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
     "i" ) INSTALL_ONLY="TRUE" ;;
     "p" ) PREFIX="$OPTARG" ;;
     "D" ) JUBATUS_VER="develop" ;;
+    "r" ) USE_RE2="TRUE" ;;
   esac
 done
 
@@ -136,8 +137,11 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz ${IPADIC_SUM}
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
-    download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz ${RE2_SUM}
-    download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
+    if [ "${USE_RE2}" == "TRUE" ]; then
+      download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz ${RE2_SUM}
+    else
+      download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
+    fi
 
     download_github_tgz pfi pficommon ${PFICOMMON_VER} ${PFICOMMON_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
@@ -163,8 +167,11 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
-    tar zxf re2-${RE2_VER}.tgz
-    tar zxf onig-${ONIG_VER}.tar.gz
+    if [ "${USE_RE2}" == "TRUE" ]; then
+      tar zxf re2-${RE2_VER}.tgz
+    else
+      tar zxf onig-${ONIG_VER}.tar.gz
+    fi
 
     tar zxf pficommon-${PFICOMMON_VER}.tar.gz
     tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
@@ -207,14 +214,16 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make && make install
     check_result $?
 
-    cd ../re2
-    sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
-    make && make install
-    check_result $?
-
-    cd ../onig-${ONIG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
-    check_result $?
+    if [ "${USE_RE2}" == "TRUE" ]; then
+      cd ../re2
+      sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
+      make && make install
+      check_result $?
+    else
+      cd ../onig-${ONIG_VER}
+      ./configure --prefix=${PREFIX} && make && make install
+      check_result $?
+    fi
 
     cd ../zookeeper-${ZK_VER}/src/c
     ./configure --prefix=${PREFIX} && make && make install
@@ -233,7 +242,13 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     cd ../jubatus-${JUBATUS_VER}
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper && ./waf build --checkall && ./waf install
+    if [ "${USE_RE2}" == "TRUE" ]; then
+      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-re2 --enable-zookeeper
+    else
+      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    fi
+    check_result $?
+    ./waf build --checkall && ./waf install
     check_result $?
 
     cat > ${PREFIX}/share/jubatus/jubatus.profile <<EOF

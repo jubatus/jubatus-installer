@@ -36,12 +36,13 @@ For example:
 All of options is following:
 
 ```
-install.sh -dip
+install.sh [-d|-i] [-p PREFIX] [-D] [r]
 
  d : only download
  i : only install
  p : install path
  D : install develop branch
+ r : use re2 instead of oniguruma
 ```
 
 To use Juatus, you need to load the environment variable from `profile` script.

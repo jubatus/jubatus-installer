@@ -33,9 +33,6 @@ RE2_SUM="71f1eac7fb83393faedc966fb9cdb5ba1057d85f"
 ONIG_VER="5.9.4"
 ONIG_SUM="c7ab81fd2aa6ecd42d146a33b48e19e552fca75b"
 
-PFICOMMON_VER="d44b82d315ecde6a713b801e81b1d7ad603539ec"
-PFICOMMON_SUM="c9b0fe99f5a6181694758207cbe8d2c50f7bc2f1"
-
 JUBATUS_MPIO_VER="0.4.2"
 JUBATUS_MPIO_SUM="e68d0777b28461a30a3612f9f5f1b4aa9408ac6c"
 
@@ -143,7 +140,6 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
       download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
 
-    download_github_tgz pfi pficommon ${PFICOMMON_VER} ${PFICOMMON_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz ${JUBATUS_MSGPACK_RPC_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
@@ -173,7 +169,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       tar zxf onig-${ONIG_VER}.tar.gz
     fi
 
-    tar zxf pficommon-${PFICOMMON_VER}.tar.gz
     tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
     tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
@@ -229,11 +224,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../../../pficommon-${PFICOMMON_VER}
-    ./waf configure --prefix=${PREFIX} --with-msgpack=${PREFIX} && ./waf build && ./waf install
-    check_result $?
-
-    cd ../jubatus_mpio-${JUBATUS_MPIO_VER}
+    cd ../../../jubatus_mpio-${JUBATUS_MPIO_VER}
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 

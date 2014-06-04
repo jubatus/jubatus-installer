@@ -11,6 +11,15 @@ MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
 GLOG_VER="0.3.3"
 GLOG_SUM="ed40c26ecffc5ad47c618684415799ebaaa30d65"
 
+LOG4CXX_VER="0.10.0"
+LOG4CXX_SUM="d79c053e8ac90f66c5e873b712bb359fd42b648d"
+
+APR_VER="1.5.1"
+APR_SUM="9caa83e3f50f3abc9fab7c4a3f2739a12b14c3a3"
+
+APR_UTIL_VER="1.5.3"
+APR_UTIL_SUM="bfee2277603c8136e12db5c7be7e9cbbd8794596"
+
 UX_VER="0.1.9"
 UX_SUM="34d3372b4add8bf4e9e49a2f786b575b8372793f"
 
@@ -128,6 +137,9 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
     download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz ${GLOG_SUM}
+    download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
+    download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
+    download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
     download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2 ${UX_SUM}
     download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz ${MECAB_SUM}
     download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz ${IPADIC_SUM}
@@ -152,11 +164,15 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command make
     check_command tar
     check_command python
+    check_command sed
 
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
     tar zxf glog-${GLOG_VER}.tar.gz
+    tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
+    tar zxf apr-${APR_VER}.tar.gz
+    tar zxf apr-util-${APR_UTIL_VER}.tar.gz
     tar jxf ux-${UX_VER}.tar.bz2
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
@@ -193,6 +209,19 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     cd ../glog-${GLOG_VER}
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
+
+    cd ../apr-${APR_VER}
+    ./configure --prefix=${PREFIX} && make && make install
+
+    cd ../apr-util-${APR_UTIL_VER}
+    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make && make install
+
+    cd ../apache-log4cxx-${LOG4CXX_VER}
+    sed -i '18i#include <string.h>' src/main/cpp/inputstreamreader.cpp
+    sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
+    sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
+    sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
+    ./configure --prefix=${PREFIX} && make && make install
 
     cd ../ux-${UX_VER}
     ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install

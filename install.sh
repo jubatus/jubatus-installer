@@ -2,13 +2,16 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="0.5.4"
-JUBATUS_SUM="a192fc14eb840d1ee3f992499e109680c8f31eb9"
+JUBATUS_VER="develop"  # TODO: Set next version's tag
+JUBATUS_SUM=""  # TODO: Set next version's shasum
+
+JUBATUS_CORE_VER="develop"  # TODO: Set next version's tag
+JUBATUS_CORE_SUM=""  # TODO: Set next version's shasum
 
 MSG_VER="0.5.7"
 MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
 
-GLOG_VER="0.3.3"
+GLOG_VER="0.3.3"  # TODO: Remove
 GLOG_SUM="ed40c26ecffc5ad47c618684415799ebaaa30d65"
 
 LOG4CXX_VER="0.10.0"
@@ -153,6 +156,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz ${JUBATUS_MSGPACK_RPC_SUM}
+    download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
     cd ..
@@ -186,6 +190,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
     tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    tar zxf jubatus_core-${JUBATUS_CORE_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
     makedir ${PREFIX}
@@ -260,12 +265,19 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus-${JUBATUS_VER}
+    cd ../jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-re2 --enable-zookeeper
+      ./waf configure --prefix=${PREFIX} --enable-re2
     else
-      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+      ./waf configure --prefix=${PREFIX}
     fi
+    check_result $?
+    ./waf build && ./waf --checkall && ./waf install  # Workaround
+    # ./waf build --checkall && ./waf install  # TODO: Enable when unittest_gtest is fixed
+    check_result $?
+
+    cd ../jubatus-${JUBATUS_VER}
+    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
     check_result $?
     ./waf build --checkall && ./waf install
     check_result $?

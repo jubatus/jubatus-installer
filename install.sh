@@ -272,8 +272,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       ./waf configure --prefix=${PREFIX}
     fi
     check_result $?
-    ./waf build && ./waf --checkall && ./waf install  # Workaround
-    # ./waf build --checkall && ./waf install  # TODO: Enable when unittest_gtest is fixed
+    ./waf build --checkall && ./waf install
     check_result $?
 
     cd ../jubatus-${JUBATUS_VER}

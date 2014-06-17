@@ -11,9 +11,6 @@ JUBATUS_CORE_SUM=""  # TODO: Set next version's shasum
 MSG_VER="0.5.7"
 MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
 
-GLOG_VER="0.3.3"  # TODO: Remove
-GLOG_SUM="ed40c26ecffc5ad47c618684415799ebaaa30d65"
-
 LOG4CXX_VER="0.10.0"
 LOG4CXX_SUM="d79c053e8ac90f66c5e873b712bb359fd42b648d"
 
@@ -139,7 +136,6 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     cd download
 
     download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
-    download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz ${GLOG_SUM}
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
@@ -173,7 +169,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
-    tar zxf glog-${GLOG_VER}.tar.gz
     tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
     tar zxf apr-${APR_VER}.tar.gz
     tar zxf apr-util-${APR_UTIL_VER}.tar.gz
@@ -208,10 +203,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     cd ../msgpack-${MSG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
-    check_result $?
-
-    cd ../glog-${GLOG_VER}
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 

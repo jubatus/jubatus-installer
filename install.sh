@@ -208,9 +208,11 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd ../apr-${APR_VER}
     ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../apr-util-${APR_UTIL_VER}
     ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make && make install
+    check_result $?
 
     cd ../apache-log4cxx-${LOG4CXX_VER}
     sed -i '18i#include <string.h>' src/main/cpp/inputstreamreader.cpp
@@ -218,6 +220,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
     sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
     ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
 
     cd ../ux-${UX_VER}
     ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install

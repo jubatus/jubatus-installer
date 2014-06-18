@@ -261,7 +261,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd ../jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --enable-re2
+      ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else
       ./waf configure --prefix=${PREFIX}
     fi

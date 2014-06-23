@@ -2,14 +2,23 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="0.5.4"
-JUBATUS_SUM="a192fc14eb840d1ee3f992499e109680c8f31eb9"
+JUBATUS_VER="0.6.0"
+JUBATUS_SUM="0b251092089359b42c57d06779649854c2f71267"
+
+JUBATUS_CORE_VER="0.0.1"
+JUBATUS_CORE_SUM="6da6072f03ce82cff93157f960e8ed6ca5dea984" 
 
 MSG_VER="0.5.7"
 MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
 
-GLOG_VER="0.3.3"
-GLOG_SUM="ed40c26ecffc5ad47c618684415799ebaaa30d65"
+LOG4CXX_VER="0.10.0"
+LOG4CXX_SUM="d79c053e8ac90f66c5e873b712bb359fd42b648d"
+
+APR_VER="1.5.1"
+APR_SUM="9caa83e3f50f3abc9fab7c4a3f2739a12b14c3a3"
+
+APR_UTIL_VER="1.5.3"
+APR_UTIL_SUM="bfee2277603c8136e12db5c7be7e9cbbd8794596"
 
 UX_VER="0.1.9"
 UX_SUM="34d3372b4add8bf4e9e49a2f786b575b8372793f"
@@ -127,7 +136,9 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     cd download
 
     download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
-    download_tgz http://google-glog.googlecode.com/files/glog-${GLOG_VER}.tar.gz ${GLOG_SUM}
+    download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
+    download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
+    download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
     download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2 ${UX_SUM}
     download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz ${MECAB_SUM}
     download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz ${IPADIC_SUM}
@@ -141,6 +152,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
     download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz ${JUBATUS_MSGPACK_RPC_SUM}
+    download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
     cd ..
@@ -152,11 +164,14 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command make
     check_command tar
     check_command python
+    check_command sed
 
     cd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
-    tar zxf glog-${GLOG_VER}.tar.gz
+    tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
+    tar zxf apr-${APR_VER}.tar.gz
+    tar zxf apr-util-${APR_UTIL_VER}.tar.gz
     tar jxf ux-${UX_VER}.tar.bz2
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
@@ -170,6 +185,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
     tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    tar zxf jubatus_core-${JUBATUS_CORE_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
     makedir ${PREFIX}
@@ -190,7 +206,19 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../glog-${GLOG_VER}
+    cd ../apr-${APR_VER}
+    ./configure --prefix=${PREFIX} && make && make install
+    check_result $?
+
+    cd ../apr-util-${APR_UTIL_VER}
+    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make && make install
+    check_result $?
+
+    cd ../apache-log4cxx-${LOG4CXX_VER}
+    sed -i '18i#include <string.h>' src/main/cpp/inputstreamreader.cpp
+    sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
+    sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
+    sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
@@ -231,12 +259,18 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus-${JUBATUS_VER}
+    cd ../jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-re2 --enable-zookeeper
+      ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else
-      ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+      ./waf configure --prefix=${PREFIX}
     fi
+    check_result $?
+    ./waf build --checkall && ./waf install
+    check_result $?
+
+    cd ../jubatus-${JUBATUS_VER}
+    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
     check_result $?
     ./waf build --checkall && ./waf install
     check_result $?

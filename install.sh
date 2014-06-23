@@ -2,11 +2,11 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="develop"  # TODO: Set next version's tag
-JUBATUS_SUM=""  # TODO: Set next version's shasum
+JUBATUS_VER="0.6.0"
+JUBATUS_SUM="0b251092089359b42c57d06779649854c2f71267"
 
-JUBATUS_CORE_VER="develop"  # TODO: Set next version's tag
-JUBATUS_CORE_SUM=""  # TODO: Set next version's shasum
+JUBATUS_CORE_VER="0.0.1"
+JUBATUS_CORE_SUM="6da6072f03ce82cff93157f960e8ed6ca5dea984" 
 
 MSG_VER="0.5.7"
 MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"

@@ -1,3 +1,12 @@
+2014-06-23 version 0.6.0:
+
+	* Install Jubatus version 0.6.0
+	* Add log4cxx
+	* Add check_result to apr, apr-util, log4cxx
+	* Use --regexp-library=re2
+	* Remove google-glog
+	* Divided jubatus and jubatus_core
+	
 2014-04-28 version 0.5.4:
 
 	* Install Jubatus version 0.5.4

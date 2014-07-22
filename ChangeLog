@@ -1,3 +1,9 @@
+2014-07-22 version 0.6.1:
+
+	* Install Jubatus version 0.6.1
+	* Update jubatus_core version 0.0.2
+	* Update jubatus-mpio and jubatus-msgpack-rpc version
+
 2014-06-23 version 0.6.0:
 
 	* Install Jubatus version 0.6.0
@@ -6,7 +12,7 @@
 	* Use --regexp-library=re2
 	* Remove google-glog
 	* Divided jubatus and jubatus_core
-	
+
 2014-04-28 version 0.5.4:
 
 	* Install Jubatus version 0.5.4

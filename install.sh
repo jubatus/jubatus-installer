@@ -8,8 +8,8 @@ JUBATUS_SUM="a534a0160e8cefd5d2a4bc93aab0d80658b9b380"
 JUBATUS_CORE_VER="0.0.7"
 JUBATUS_CORE_SUM="7f316d97912b4271c1b8e71624f6dc64f3275d10"
 
-MSG_VER="0.5.7"
-MSG_SUM="1b04e1b5d47c534cef8d2fbd7718a1e4ffaae4c5"
+MSG_VER="0.5.9"
+MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
 
 LOG4CXX_VER="0.10.0"
 LOG4CXX_SUM="d79c053e8ac90f66c5e873b712bb359fd42b648d"
@@ -135,7 +135,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     makedir download
     cd download
 
-    download_tgz http://msgpack.org/releases/cpp/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
+    download_tgz https://github.com/msgpack/msgpack-c/releases/download/cpp-${MSG_VER}/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}

@@ -42,10 +42,10 @@ ONIG_VER="5.9.5"
 ONIG_SUM="804132e1324ef8b940414324c741547d7ecf24e8"
 
 JUBATUS_MPIO_VER="0.4.5"
-JUBATUS_MPIO_SUM="d83ecb3e07b16260e7af6252b42e529fcf5d6ace"
+JUBATUS_MPIO_SUM="ad4e75bf612d18d710a44e3d1a94413abf33eeb7"
 
 JUBATUS_MSGPACK_RPC_VER="0.4.4"
-JUBATUS_MSGPACK_RPC_SUM="ba866fb38c024e12fb50d2ce43e69d688c646689"
+JUBATUS_MSGPACK_RPC_SUM="a62582b243dc3c232aa29335d3657ecc2944df3b"
 
 
 while getopts dip:Dr OPT
@@ -89,6 +89,76 @@ download_github_tgz(){
     fi
 }
 
+# When $name is abc-def and $version is develop, echoes abc_def.
+# When $name is abc-def and $version is not develop, echoes abc-def.
+echo_handy_name() {
+    local name=$1
+    local version=$2
+
+    if [ $version != "develop" ]; then
+        echo $name | sed 's/-/_/'
+    else
+        echo $name
+    fi
+}
+
+# This function downloads jubauts-mpio or jubatus-msgpack-rpc from download.jubat.us or GitHub.
+# When a version is specified as "develop", the function downloads a tarball of develop branch from GitHub.
+# Otherwise, the function downloads from download.jubat.us.
+#
+# The aim is to eliminate dependency to ruby and autotools when released version is specified.
+# A tarball from download.jubat.us contains a configure script,
+# so the tools which generate configure scripts (i.e. ruby and autotools) are not required
+# when building released librariess.
+download_from_proper_location_tgz() {
+    local name=$2 # jubatus-mpio or jubatus-msgpack-rpc
+    local version=$3
+    local sum=$4
+
+    name=`echo_handy_name $name $version`
+    if [ $version = "develop" ]; then
+        download_github_tgz $1 $name $version $sum
+    else
+        download_tgz "http://download.jubat.us/files/source/$name/$name-$version.tar.gz" $sum
+    fi
+}
+
+# The aim of this function is same as the above.
+extract_tarball_properly() {
+    local name=$1
+    local version=$2
+
+    name=`echo_handy_name $name $version`
+
+    tar zxf $name-$version.tar.gz
+}
+
+# The aim of this function is same as the above.
+build_properly() {
+    local name=$1 # jubatus-mpio or jubatus-msgpack-rpc
+    local version=$2
+
+    name=`echo_handy_name $name $version`
+
+    pushd $name-$version
+    if [ $name = "jubatus-msgpack-rpc" ]; then # develop version of jubatus-msgpack-rpc
+        pushd cpp
+    else
+        pushd .
+    fi
+
+    if [ $version = "develop" ]; then
+        ./bootstrap
+    fi
+
+    ./configure --prefix=${PREFIX} && make && make install
+    local retval=$?
+    popd
+    popd
+
+    return $((retval + 0))
+}
+
 check_result(){
     if [ $1 -ne 0 ]; then
         echo "ERROR"
@@ -112,6 +182,17 @@ check_libtoolize_command() {
     fi
 
     check_command $libtoolize
+}
+
+check_commands_to_generate_configure_script() {
+    if [ $JUBATUS_MPIO_VER = "develop" -o $JUBATUS_MSGPACK_RPC_VER = "develop" ]; then
+        check_command ruby
+        check_command aclocal
+        check_command autoconf
+        check_command autoheader
+        check_command automake
+        check_libtoolize_command
+    fi
 }
 
 check_shasum_command() {
@@ -164,8 +245,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
       download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
 
-    download_github_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER} ${JUBATUS_MPIO_SUM}
-    download_github_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER} ${JUBATUS_MSGPACK_RPC_SUM}
+    download_from_proper_location_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER} ${JUBATUS_MPIO_SUM}
+    download_from_proper_location_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER} ${JUBATUS_MSGPACK_RPC_SUM}
     download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
@@ -174,12 +255,7 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
-    check_command ruby
-    check_command aclocal
-    check_command autoconf
-    check_command autoheader
-    check_command automake
-    check_libtoolize_command
+    check_commands_to_generate_configure_script
     check_command g++
     check_command make
     check_command tar
@@ -203,8 +279,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       tar zxf onig-${ONIG_VER}.tar.gz
     fi
 
-    tar zxf jubatus-mpio-${JUBATUS_MPIO_VER}.tar.gz
-    tar zxf jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    extract_tarball_properly jubatus-mpio ${JUBATUS_MPIO_VER}
+    extract_tarball_properly jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
     tar zxf jubatus_core-${JUBATUS_CORE_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
@@ -271,17 +347,14 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../../../jubatus-mpio-${JUBATUS_MPIO_VER}
-    ./bootstrap
-    ./configure --prefix=${PREFIX} && make && make install
+    cd ../../..
+    build_properly jubatus-mpio ${JUBATUS_MPIO_VER}
     check_result $?
 
-    cd ../jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}/cpp
-    ./bootstrap
-    ./configure --prefix=${PREFIX} && make && make install
+    build_properly jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
     check_result $?
 
-    cd ../../jubatus_core-${JUBATUS_CORE_VER}
+    cd jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
       ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else

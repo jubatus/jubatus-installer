@@ -42,10 +42,10 @@ ONIG_VER="5.9.5"
 ONIG_SUM="804132e1324ef8b940414324c741547d7ecf24e8"
 
 JUBATUS_MPIO_VER="0.4.5"
-JUBATUS_MPIO_SUM="ad4e75bf612d18d710a44e3d1a94413abf33eeb7"
+JUBATUS_MPIO_SUM="d83ecb3e07b16260e7af6252b42e529fcf5d6ace"
 
 JUBATUS_MSGPACK_RPC_VER="0.4.4"
-JUBATUS_MSGPACK_RPC_SUM="a62582b243dc3c232aa29335d3657ecc2944df3b"
+JUBATUS_MSGPACK_RPC_SUM="ba866fb38c024e12fb50d2ce43e69d688c646689"
 
 
 while getopts dip:Dr OPT
@@ -100,6 +100,17 @@ check_command(){
     fi
 }
 
+check_libtoolize_command() {
+    local libtoolize
+    if [ `uname` = Darwin ]; then # OS X
+        libtoolize="glibtoolize"
+    else
+        libtoolize="libtoolize"
+    fi
+
+    check_command $libtoolize
+}
+
 check_shasum_command() {
     if type sha1sum > /dev/null 2>&1 ; then
         shasum="sha1sum"
@@ -150,8 +161,8 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
       download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
 
-    download_tgz http://download.jubat.us/files/source/jubatus_mpio/jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz ${JUBATUS_MPIO_SUM}
-    download_tgz http://download.jubat.us/files/source/jubatus_msgpack-rpc/jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz ${JUBATUS_MSGPACK_RPC_SUM}
+    download_github_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER} ${JUBATUS_MPIO_SUM}
+    download_github_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER} ${JUBATUS_MSGPACK_RPC_SUM}
     download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
@@ -160,6 +171,12 @@ fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
   then
+    check_command ruby
+    check_command aclocal
+    check_command autoconf
+    check_command autoheader
+    check_command automake
+    check_libtoolize_command
     check_command g++
     check_command make
     check_command tar
@@ -183,8 +200,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       tar zxf onig-${ONIG_VER}.tar.gz
     fi
 
-    tar zxf jubatus_mpio-${JUBATUS_MPIO_VER}.tar.gz
-    tar zxf jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
+    tar zxf jubatus-mpio-${JUBATUS_MPIO_VER}.tar.gz
+    tar zxf jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz
     tar zxf jubatus_core-${JUBATUS_CORE_VER}.tar.gz
     tar zxf jubatus-${JUBATUS_VER}.tar.gz
 
@@ -251,15 +268,17 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../../../jubatus_mpio-${JUBATUS_MPIO_VER}
+    cd ../../../jubatus-mpio-${JUBATUS_MPIO_VER}
+    ./bootstrap
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus_msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}
+    cd ../jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}/cpp
+    ./bootstrap
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../jubatus_core-${JUBATUS_CORE_VER}
+    cd ../../jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
       ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else

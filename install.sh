@@ -54,7 +54,10 @@ do
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
     "i" ) INSTALL_ONLY="TRUE" ;;
     "p" ) PREFIX="$OPTARG" ;;
-    "D" ) JUBATUS_VER="develop" ;;
+    "D" ) JUBATUS_MPIO_VER="develop"
+          JUBATUS_MSGPACK_RPC_VER="develop"
+          JUBATUS_CORE_VER="develop"
+          JUBATUS_VER="develop" ;;
     "r" ) USE_RE2="TRUE" ;;
   esac
 done

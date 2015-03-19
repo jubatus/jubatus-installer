@@ -264,7 +264,9 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       ./waf configure --prefix=${PREFIX}
     fi
     check_result $?
-    ./waf build --checkall && ./waf install
+    LD_LIBRARY_PATH=${PREFIX}/lib ./waf build --checkall
+    check_result $?
+    ./waf install
     check_result $?
 
     cd ../jubatus-${JUBATUS_VER}

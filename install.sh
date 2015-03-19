@@ -259,12 +259,12 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd ../jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --regexp-library=re2
+      LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else
-      ./waf configure --prefix=${PREFIX}
+      LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX}
     fi
     check_result $?
-    LD_LIBRARY_PATH=${PREFIX}/lib ./waf build --checkall
+    LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf build --checkall
     check_result $?
     ./waf install
     check_result $?
@@ -274,7 +274,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
     ./waf build
     check_result $?
-    LD_LIBRARY_PATH=${PREFIX}/lib DYLD_LIBRARY_PATH=${PREFIX}/lib ./waf --checkall
+    LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf --checkall
     check_result $?
     ./waf install
     check_result $?

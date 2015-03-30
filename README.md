@@ -45,7 +45,7 @@ install.sh [-d|-i] [-p PREFIX] [-D] [-r]
  r : use re2 instead of oniguruma
 ```
 
-To use Juatus, you need to load the environment variable from `profile` script.
+To use Jubatus, you need to load the environment variable from `profile` script.
 
 ```
 add $PREFIX/share/jubatus/jubatus.profile to your .xshrc

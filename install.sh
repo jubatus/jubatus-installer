@@ -199,7 +199,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
     cd ./pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} --with-internal-glib && make && make install
     check_result $?
 
     cd ../msgpack-${MSG_VER}

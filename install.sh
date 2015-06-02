@@ -32,8 +32,8 @@ IPADIC_SUM="0d9d021853ba4bb4adfa782ea450e55bfe1a229b"
 ZK_VER="3.4.6"
 ZK_SUM="2a9e53f5990dfe0965834a525fbcad226bf93474"
 
-PKG_VER="0.25"
-PKG_SUM="8922aeb4edeff7ed554cc1969cbb4ad5a4e6b26e"
+PKG_VER="0.28"
+PKG_SUM="71853779b12f958777bffcb8ca6d849b4d3bed46"
 
 RE2_VER="20130115"
 RE2_SUM="71f1eac7fb83393faedc966fb9cdb5ba1057d85f"
@@ -199,7 +199,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
     cd ./pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} --with-internal-glib && make && make install
     check_result $?
 
     cd ../msgpack-${MSG_VER}

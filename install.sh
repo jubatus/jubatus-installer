@@ -35,11 +35,11 @@ ZK_SUM="2a9e53f5990dfe0965834a525fbcad226bf93474"
 PKG_VER="0.28"
 PKG_SUM="71853779b12f958777bffcb8ca6d849b4d3bed46"
 
-RE2_VER="20130115"
-RE2_SUM="71f1eac7fb83393faedc966fb9cdb5ba1057d85f"
+RE2_VER="2015-06-01"
+RE2_SUM="e3d41170c0ab6ddda4df9ed6efc2f5e8e667983b"
 
-ONIG_VER="5.9.5"
-ONIG_SUM="804132e1324ef8b940414324c741547d7ecf24e8"
+ONIG_VER="5.9.6"
+ONIG_SUM="08d2d7b64b15cbd024b089f0924037f329bc7246"
 
 JUBATUS_MPIO_VER="0.4.5"
 JUBATUS_MPIO_SUM="ad4e75bf612d18d710a44e3d1a94413abf33eeb7"
@@ -145,7 +145,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      download_tgz http://re2.googlecode.com/files/re2-${RE2_VER}.tgz ${RE2_SUM}
+      download_github_tgz google re2 ${RE2_VER} ${RE2_SUM}
     else
       download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
@@ -178,7 +178,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf zookeeper-${ZK_VER}.tar.gz
     tar zxf pkg-config-${PKG_VER}.tar.gz
     if [ "${USE_RE2}" == "TRUE" ]; then
-      tar zxf re2-${RE2_VER}.tgz
+      tar zxf re2-${RE2_VER}.tar.gz
     else
       tar zxf onig-${ONIG_VER}.tar.gz
     fi
@@ -237,7 +237,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     if [ "${USE_RE2}" == "TRUE" ]; then
-      cd ../re2
+      cd ../re2-${RE2_VER}
       sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
       make && make install
       check_result $?

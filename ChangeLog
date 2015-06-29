@@ -1,3 +1,11 @@
+2015-06-29 version 0.8.0:
+
+	* Install Jubatus version 0.8.0
+	* Update jubatus_core version 0.2.0
+	* Update apr version
+	* Update pkg-config version
+	* Update re2 and oniguruma version
+
 2015-04-27 version 0.7.2:
 
 	* Install Jubatus version 0.7.2

@@ -242,7 +242,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     if [ "${USE_RE2}" == "TRUE" ]; then
       download_github_tgz google re2 ${RE2_VER} ${RE2_SUM}
     else
-      download_tgz http://www.geocities.jp/kosako3/oniguruma/archive/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
+      download_tgz https://github.com/kkos/oniguruma/releases/download/v${ONIG_VER}/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
 
     download_from_proper_location_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER} ${JUBATUS_MPIO_SUM}

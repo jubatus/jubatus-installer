@@ -1,0 +1,21 @@
+before_install:
+  - env
+  - lsb_release -a
+  - uname -a
+  - sudo apt-get -qq update
+
+script:
+  # master
+  - ./install.sh -p /tmp/jubatus
+  # develop
+  - ./install.sh -p /tmp/jubatus -D
+  # develop with re2
+  - ./install.sh -p /tmp/jubatus -D -r
+
+branches:
+  only:
+    - master
+    - develop
+
+notifications:
+  email: false

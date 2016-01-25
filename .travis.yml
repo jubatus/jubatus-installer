@@ -7,10 +7,13 @@ before_install:
 script:
   # master
   - ./install.sh -p /tmp/jubatus
+  - rm -rf /tmp/jubatus
   # develop
   - ./install.sh -p /tmp/jubatus -D
+  - rm -rf /tmp/jubatus
   # develop with re2
   - ./install.sh -p /tmp/jubatus -D -r
+  - rm -rf /tmp/jubatus
 
 branches:
   only:

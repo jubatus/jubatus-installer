@@ -1,9 +1,18 @@
+2016-4-25 version 0.9.0:
+
+	* Install Jubatus version 0.9.0
+	* Update jubatus_core version 0.3.0
+
+2016-3-28 version 0.8.9:
+
+	* Install Jubatus version 0.8.9
+	* Update jubatus_core version 0.2.9
+
 2016-2-29 version 0.8.8:
 
 	* Install Jubatus version 0.8.8
 	* Update jubatus_core version 0.2.8
 	* Revert zookeeper version 3.4.8
-
 
 2016-1-25 version 0.8.7:
 

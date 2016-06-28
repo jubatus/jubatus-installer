@@ -289,8 +289,6 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export PATH=${PREFIX}/bin:$PATH
     export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
     export LDFLAGS="-L${PREFIX}/lib"
-    export LD_LIBRARY_PATH="${PREFIX}/lib"
-    export DYLD_LIBRARY_PATH="${PREFIX}/lib"
     export C_INCLUDE_PATH="${PREFIX}/include"
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
@@ -319,7 +317,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     cd ../ux-${UX_VER}
-    ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
+    LINKFLAGS="-Wl,--rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
     check_result $?
 
     cd ../mecab-${MECAB_VER}
@@ -356,18 +354,24 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     cd jubatus_core-${JUBATUS_CORE_VER}
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --regexp-library=re2
+      LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX} --regexp-library=re2
     else
-      ./waf configure --prefix=${PREFIX}
+      LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX}
     fi
     check_result $?
-    ./waf build --checkall && ./waf install
+    LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf build --checkall
+    check_result $?
+    ./waf install
     check_result $?
 
     cd ../jubatus-${JUBATUS_VER}
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
     check_result $?
-    ./waf build --checkall && ./waf install
+    ./waf build
+    check_result $?
+    LINKFLAGS="-Wl,-rpath,${PREFIX}/lib" ./waf --checkall
+    check_result $?
+    ./waf install
     check_result $?
 
     cat > ${PREFIX}/share/jubatus/jubatus.profile <<EOF
@@ -384,12 +388,6 @@ export CPLUS_INCLUDE_PATH
 
 LDFLAGS=-L\$JUBATUS_HOME/lib
 export LDFLAGS
-
-LD_LIBRARY_PATH=\$JUBATUS_HOME/lib
-export LD_LIBRARY_PATH
-
-DYLD_LIBRARY_PATH=\$JUBATUS_HOME/lib
-export DYLD_LIBRARY_PATH=\$JUBATUS_HOME/lib
 
 PKG_CONFIG_PATH=\$JUBATUS_HOME/lib/pkgconfig
 export PKG_CONFIG_PATH

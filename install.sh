@@ -21,13 +21,15 @@ APR_UTIL_VER="1.5.4"
 APR_UTIL_SUM="72cc3ac693b52fb831063d5c0de18723bc8e0095"
 
 UX_VER="0.1.9"
-UX_SUM="34d3372b4add8bf4e9e49a2f786b575b8372793f"
+UX_SUM="1f5427dd1fc6052fb125959f183471e6f81f87d9"
 
 MECAB_VER="0.996"
 MECAB_SUM="15baca0983a61c1a49cffd4a919463a0a39ef127"
+MECAB_URL="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE"
 
 IPADIC_VER="2.7.0-20070801"
 IPADIC_SUM="0d9d021853ba4bb4adfa782ea450e55bfe1a229b"
+IPADIC_URL="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM"
 
 ZK_VER="3.4.8"
 ZK_SUM="51b61611a329294f75aed82f3a4517a4b6ff116f"
@@ -65,8 +67,10 @@ done
 download_tgz(){
     filename=${1##*/}
     sum=$2
+    [ ! -z "$3" ] && filename=$3
+
     if [ ! -f $filename ]; then
-        wget $1
+        wget -O "${filename}" $1
         check_result $?
     fi
     echo "$sum  $filename" | $shasum -c /dev/stdin
@@ -234,9 +238,9 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
-    download_tgz http://ux-trie.googlecode.com/files/ux-${UX_VER}.tar.bz2 ${UX_SUM}
-    download_tgz http://mecab.googlecode.com/files/mecab-${MECAB_VER}.tar.gz ${MECAB_SUM}
-    download_tgz http://mecab.googlecode.com/files/mecab-ipadic-${IPADIC_VER}.tar.gz ${IPADIC_SUM}
+    download_github_tgz hillbig ux-trie ${UX_VER} ${UX_SUM}
+    download_tgz "${MECAB_URL}" ${MECAB_SUM} "mecab-${MECAB_VER}.tar.gz"
+    download_tgz "${IPADIC_URL}" ${IPADIC_SUM} "mecab-ipadic-${IPADIC_VER}.tar.gz"
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
     if [ "${USE_RE2}" == "TRUE" ]; then
@@ -268,7 +272,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
     tar zxf apr-${APR_VER}.tar.gz
     tar zxf apr-util-${APR_UTIL_VER}.tar.gz
-    tar jxf ux-${UX_VER}.tar.bz2
+    tar zxf ux-trie-${UX_VER}.tar.gz
     tar zxf mecab-${MECAB_VER}.tar.gz
     tar zxf mecab-ipadic-${IPADIC_VER}.tar.gz
     tar zxf zookeeper-${ZK_VER}.tar.gz
@@ -318,7 +322,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     ./configure --prefix=${PREFIX} && make && make install
     check_result $?
 
-    cd ../ux-${UX_VER}
+    cd ../ux-trie-${UX_VER}
     ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
     check_result $?
 

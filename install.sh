@@ -403,6 +403,42 @@ fi
 status=${PIPESTATUS[0]}
 
 if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "*************************************************************"
+  echo "Jubatus installation failed..."
+  echo "If the problem persists, try cleaning up ${PREFIX} directory."
   echo "all messages above are saved in \"$INSTALL_LOG\""
   exit $status
 fi
+
+cat << _EOF_
+
+//=============================================================//
+//                                                             //
+//   _________         ___                                     //
+//   \____   _|       | /             ___I_I___                //
+//       |  |         | |             \__^ ^__/        ____    //
+//       |  |         | | ___    ___  __ | |          / __/    //
+//       |  | |-|  |-|| |/   \  /   \| | | | |^|  |^|| (__     //
+//       |  | | |  | ||    ^  ||  ^    | | | | |  | | \__ \    //
+//       |  | | \_/  ||    O  ||  O    | | |_| \_/  | ___) |   //
+//       |  |  \__/|_||_|\___/  \___/|_| |__/ \__/|_| \___/    //
+//       | /                                                   //
+//      / /                                                    //
+//     |/                                                      //
+//                                                             //
+//=============================================================//
+              Jubatus ${JUBATUS_VER} Installation Completed!
+
+  Add the following lines to your ~/.bashrc or ~/.zshrc:
+
+    # Jubatus
+    source ${PREFIX}/share/jubatus/jubatus.profile
+
+  Tutorials and examples can be found at:
+
+    * http://jubat.us/en/tutorial.html
+    * https://github.com/jubatus/jubatus-example/
+
+  Have fun!  -- Jubatus Team
+_EOF_

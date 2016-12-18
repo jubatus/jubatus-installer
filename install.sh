@@ -155,7 +155,7 @@ build_properly() {
         ./bootstrap
     fi
 
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     local retval=$?
     popd
     popd
@@ -299,19 +299,19 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
     cd ./pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX} --with-internal-glib && make && make install
+    ./configure --prefix=${PREFIX} --with-internal-glib && make clean && make && make install
     check_result $?
 
     cd ../msgpack-${MSG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
 
     cd ../apr-${APR_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
 
     cd ../apr-util-${APR_UTIL_VER}
-    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make clean && make && make install
     check_result $?
 
     cd ../apache-log4cxx-${LOG4CXX_VER}
@@ -319,36 +319,36 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
     sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
     sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
 
     cd ../ux-trie-${UX_VER}
-    ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
+    ./waf configure --prefix=${PREFIX} && ./waf clean && ./waf build && ./waf install
     check_result $?
 
     cd ../mecab-${MECAB_VER}
-    ./configure --prefix=${PREFIX} --enable-utf8-only && make && make install
+    ./configure --prefix=${PREFIX} --enable-utf8-only && make clean && make && make install
     check_result $?
 
     cd ../mecab-ipadic-${IPADIC_VER}
     MECAB_CONFIG="$PREFIX/bin/mecab-config"
     MECAB_DICDIR=`$MECAB_CONFIG --dicdir`
-    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make && make install
+    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make clean && make && make install
     check_result $?
 
     if [ "${USE_RE2}" == "TRUE" ]; then
       cd ../re2-${RE2_VER}
       sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
-      make && make install
+      make clean && make && make install
       check_result $?
     else
       cd ../onig-${ONIG_VER}
-      ./configure --prefix=${PREFIX} && make && make install
+      ./configure --prefix=${PREFIX} && make clean && make && make install
       check_result $?
     fi
 
     cd ../zookeeper-${ZK_VER}/src/c
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
 
     cd ../../..
@@ -365,13 +365,13 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       ./waf configure --prefix=${PREFIX}
     fi
     check_result $?
-    ./waf build --checkall && ./waf install
+    ./waf clean && ./waf build --checkall && ./waf install
     check_result $?
 
     cd ../jubatus-${JUBATUS_VER}
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    ./waf clean && ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
     check_result $?
-    ./waf build --checkall && ./waf install
+    ./waf clean && ./waf build --checkall && ./waf install
     check_result $?
 
     cat > ${PREFIX}/share/jubatus/jubatus.profile <<EOF

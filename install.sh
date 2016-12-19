@@ -50,7 +50,7 @@ JUBATUS_MSGPACK_RPC_VER="0.4.4"
 JUBATUS_MSGPACK_RPC_SUM="a62582b243dc3c232aa29335d3657ecc2944df3b"
 
 
-while getopts dip:Dr OPT
+while getopts dip:Drx OPT
 do
   case $OPT in
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
@@ -61,6 +61,7 @@ do
           JUBATUS_CORE_VER="develop"
           JUBATUS_VER="develop" ;;
     "r" ) USE_RE2="TRUE" ;;
+    "x" ) ENABLE_DEBUG="TRUE" ;;
   esac
 done
 
@@ -368,18 +369,28 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     pushd jubatus_core-${JUBATUS_CORE_VER}
+    CONFIGURE_OPT="--prefix=${PREFIX}"
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --regexp-library=re2
-    else
-      ./waf configure --prefix=${PREFIX}
+      CONFIGURE_OPT="${CONFIGURE_OPT} --regexp-library=re2"
     fi
+
+    if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
+      CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
+    fi
+
+    ./waf configure ${CONFIGURE_OPT}
     check_result $?
     ./waf clean && ./waf build --checkall && ./waf install
     check_result $?
     popd
 
     pushd jubatus-${JUBATUS_VER}
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    CONFIGURE_OPT="--prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper"
+    if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
+      CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
+    fi
+
+    ./waf configure ${CONFIGURE_OPT}
     check_result $?
     ./waf clean && ./waf build --checkall && ./waf install
     check_result $?

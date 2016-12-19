@@ -379,7 +379,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     pushd jubatus-${JUBATUS_VER}
-    ./waf clean && ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
     check_result $?
     ./waf clean && ./waf build --checkall && ./waf install
     check_result $?

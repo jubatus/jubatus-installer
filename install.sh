@@ -423,14 +423,11 @@ EOF
 
 fi
 
-) 2>&1 | tee $INSTALL_LOG
+) > $INSTALL_LOG 2>&1
 
-# to avoid getting the exit status of "tee" command
-status=${PIPESTATUS[0]}
+status=${?}
 
 if [ "$status" -ne 0 ]; then
-  echo ""
-  echo "*************************************************************"
   echo "Jubatus installation failed..."
   echo "If the problem persists, try cleaning up ${PREFIX} directory."
   echo "all messages above are saved in \"$INSTALL_LOG\""

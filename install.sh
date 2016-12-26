@@ -2,11 +2,11 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="1.0.0"
-JUBATUS_SUM="f0d370f3a7880abf90ab2540192dff3db995a459"
+JUBATUS_VER="1.0.1"
+JUBATUS_SUM="a7b37211b81988a01c5391ab9334d72f9704877a"
 
-JUBATUS_CORE_VER="1.0.0-p1"
-JUBATUS_CORE_SUM="a8e44cbdaa9a2ff997f742d90afee6f5f6894756"
+JUBATUS_CORE_VER="1.0.1-p1"
+JUBATUS_CORE_SUM="5c1bdde4e19d1f8b065aad2a92a4acfa511639f3"
 
 MSG_VER="0.5.9"
 MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
@@ -50,7 +50,7 @@ JUBATUS_MSGPACK_RPC_VER="0.4.4"
 JUBATUS_MSGPACK_RPC_SUM="a62582b243dc3c232aa29335d3657ecc2944df3b"
 
 
-while getopts dip:Dr OPT
+while getopts dip:Drx OPT
 do
   case $OPT in
     "d" ) DOWNLOAD_ONLY="TRUE" ;;
@@ -61,6 +61,7 @@ do
           JUBATUS_CORE_VER="develop"
           JUBATUS_VER="develop" ;;
     "r" ) USE_RE2="TRUE" ;;
+    "x" ) ENABLE_DEBUG="TRUE" ;;
   esac
 done
 
@@ -155,7 +156,7 @@ build_properly() {
         ./bootstrap
     fi
 
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     local retval=$?
     popd
     popd
@@ -232,7 +233,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     check_shasum_command
 
     makedir download
-    cd download
+    pushd download
 
     download_tgz https://github.com/msgpack/msgpack-c/releases/download/cpp-${MSG_VER}/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
@@ -254,7 +255,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
-    cd ..
+    popd
 fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
@@ -266,7 +267,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command python
     check_command sed
 
-    cd download
+    pushd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
     tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
@@ -298,81 +299,102 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export C_INCLUDE_PATH="${PREFIX}/include"
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
-    cd ./pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX} --with-internal-glib && make && make install
+    pushd pkg-config-${PKG_VER}
+    ./configure --prefix=${PREFIX} --with-internal-glib && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../msgpack-${MSG_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    pushd msgpack-${MSG_VER}
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../apr-${APR_VER}
-    ./configure --prefix=${PREFIX} && make && make install
+    pushd apr-${APR_VER}
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../apr-util-${APR_UTIL_VER}
-    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make && make install
+    pushd apr-util-${APR_UTIL_VER}
+    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../apache-log4cxx-${LOG4CXX_VER}
+    pushd apache-log4cxx-${LOG4CXX_VER}
     sed -i '18i#include <string.h>' src/main/cpp/inputstreamreader.cpp
     sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
     sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
     sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
-    ./configure --prefix=${PREFIX} && make && make install
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../ux-trie-${UX_VER}
-    ./waf configure --prefix=${PREFIX} && ./waf build && ./waf install
+    pushd ux-trie-${UX_VER}
+    ./waf configure --prefix=${PREFIX} && ./waf clean && ./waf build && ./waf install
     check_result $?
+    popd
 
-    cd ../mecab-${MECAB_VER}
-    ./configure --prefix=${PREFIX} --enable-utf8-only && make && make install
+    pushd mecab-${MECAB_VER}
+    ./configure --prefix=${PREFIX} --enable-utf8-only && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../mecab-ipadic-${IPADIC_VER}
+    pushd mecab-ipadic-${IPADIC_VER}
     MECAB_CONFIG="$PREFIX/bin/mecab-config"
     MECAB_DICDIR=`$MECAB_CONFIG --dicdir`
-    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make && make install
+    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make clean && make && make install
     check_result $?
+    popd
 
     if [ "${USE_RE2}" == "TRUE" ]; then
-      cd ../re2-${RE2_VER}
+      pushd re2-${RE2_VER}
       sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
-      make && make install
+      make clean && make && make install
       check_result $?
     else
-      cd ../onig-${ONIG_VER}
-      ./configure --prefix=${PREFIX} && make && make install
+      pushd onig-${ONIG_VER}
+      ./configure --prefix=${PREFIX} && make clean && make && make install
       check_result $?
     fi
+    popd
 
-    cd ../zookeeper-${ZK_VER}/src/c
-    ./configure --prefix=${PREFIX} && make && make install
+    pushd zookeeper-${ZK_VER}/src/c
+    ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
+    popd
 
-    cd ../../..
     build_properly jubatus-mpio ${JUBATUS_MPIO_VER}
     check_result $?
 
     build_properly jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
     check_result $?
 
-    cd jubatus_core-${JUBATUS_CORE_VER}
+    pushd jubatus_core-${JUBATUS_CORE_VER}
+    CONFIGURE_OPT="--prefix=${PREFIX}"
     if [ "${USE_RE2}" == "TRUE" ]; then
-      ./waf configure --prefix=${PREFIX} --regexp-library=re2
-    else
-      ./waf configure --prefix=${PREFIX}
+      CONFIGURE_OPT="${CONFIGURE_OPT} --regexp-library=re2"
     fi
-    check_result $?
-    ./waf build --checkall && ./waf install
-    check_result $?
 
-    cd ../jubatus-${JUBATUS_VER}
-    ./waf configure --prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper
+    if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
+      CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
+    fi
+
+    ./waf configure ${CONFIGURE_OPT}
     check_result $?
-    ./waf build --checkall && ./waf install
+    ./waf clean && ./waf build --checkall && ./waf install
     check_result $?
+    popd
+
+    pushd jubatus-${JUBATUS_VER}
+    CONFIGURE_OPT="--prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper"
+    if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
+      CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
+    fi
+
+    ./waf configure ${CONFIGURE_OPT}
+    check_result $?
+    ./waf clean && ./waf build --checkall && ./waf install
+    check_result $?
+    popd
 
     cat > ${PREFIX}/share/jubatus/jubatus.profile <<EOF
 # THIS FILE IS AUTOMATICALLY GENERATED

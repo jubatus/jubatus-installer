@@ -43,6 +43,7 @@ install.sh [-d|-i] [-p PREFIX] [-D] [-r]
  p : install path
  D : install develop branch
  r : use re2 instead of oniguruma
+ x : enable debug mode
 ```
 
 To use Jubatus, you need to load the environment variable from `profile` script.

@@ -264,7 +264,14 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command g++
     check_command make
     check_command tar
-    check_command python
+    if type python > /dev/null ; then
+        PYTHON=python
+    elif type python3 > /dev/null; then
+        PYTHON=python3
+    else
+        echo "command not found: python or python3"
+        exit 1
+    fi
     check_command sed
 
     pushd download
@@ -329,7 +336,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     pushd ux-trie-${UX_VER}
-    ./waf configure --prefix=${PREFIX} && ./waf clean && ./waf build && ./waf install
+    ${PYTHON} ./waf configure --prefix=${PREFIX} && ${PYTHON} ./waf clean && ${PYTHON} ./waf build && ${PYTHON} ./waf install
     check_result $?
     popd
 
@@ -378,9 +385,9 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
     fi
 
-    ./waf configure ${CONFIGURE_OPT}
+    ${PYTHON} ./waf configure ${CONFIGURE_OPT}
     check_result $?
-    ./waf clean && ./waf build --checkall && ./waf install
+    ${PYTHON} ./waf clean && ${PYTHON} ./waf build --checkall && ${PYTHON} ./waf install
     check_result $?
     popd
 
@@ -390,9 +397,9 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
       CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
     fi
 
-    ./waf configure ${CONFIGURE_OPT}
+    ${PYTHON} ./waf configure ${CONFIGURE_OPT}
     check_result $?
-    ./waf clean && ./waf build --checkall && ./waf install
+    ${PYTHON} ./waf clean && ${PYTHON} ./waf build --checkall && ${PYTHON} ./waf install
     check_result $?
     popd
 

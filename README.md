@@ -13,12 +13,12 @@ Requirements
 * g++
 * make
 * tar
-* python
+* python 2.x
 * python-dev (for `install_python.sh`)
 
-Note that some libraries cannot be built with Python 3.x.
-You may need to install Python 2.x if you don't have one.
-For example, if you are on Ubuntu 16.04, run `sudo apt-get install python2.7`.
+Due to the limitation of some libraries, jubatus-installer may fail when used with Python 3.x.
+Please make sure that your `python` command points to Python 2.x.
+If you are on Ubuntu 16.04 and you don't have `python` command, run `sudo apt-get install python2.7`.
 
 Usage
 -----

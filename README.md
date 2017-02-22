@@ -16,6 +16,9 @@ Requirements
 * python
 * python-dev (for `install_python.sh`)
 
+Note that some libraries cannot be built with Python 3.x.
+You may need to install Python 2.x if you don't have one.
+For example, if you are on Ubuntu 16.04, run `sudo apt-get install python2.7`.
 
 Usage
 -----

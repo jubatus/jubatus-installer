@@ -369,7 +369,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     pushd jubatus_core-${JUBATUS_CORE_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX}"
+    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib"
     if [ "${USE_RE2}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --regexp-library=re2"
     fi
@@ -385,7 +385,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     pushd jubatus-${JUBATUS_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper"
+    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib --enable-ux --enable-mecab --enable-zookeeper"
     if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
     fi

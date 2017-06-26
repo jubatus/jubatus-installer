@@ -2,11 +2,11 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="1.0.3"
-JUBATUS_SUM="a40a5338a4f9e345061177cea3950bff4ba9798d"
+JUBATUS_VER="1.0.4"
+JUBATUS_SUM="6e681f8d0c0ac18aaa97dd7e1f5ea1220135069e"
 
-JUBATUS_CORE_VER="1.0.3"
-JUBATUS_CORE_SUM="9326509f0d4e87ec6fd3bde7676776a6c2524cfa"
+JUBATUS_CORE_VER="1.0.4"
+JUBATUS_CORE_SUM="5376abfc7fa6a482648a25d099afc777badf96f2"
 
 MSG_VER="0.5.9"
 MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
@@ -369,7 +369,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
 
     pushd jubatus_core-${JUBATUS_CORE_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX}"
+    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib"
     if [ "${USE_RE2}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --regexp-library=re2"
     fi
@@ -385,7 +385,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     pushd jubatus-${JUBATUS_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX} --enable-ux --enable-mecab --enable-zookeeper"
+    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib --enable-ux --enable-mecab --enable-zookeeper"
     if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
     fi

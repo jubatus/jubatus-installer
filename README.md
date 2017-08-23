@@ -39,7 +39,7 @@ For example:
 All of options is following:
 
 ```
-install.sh [-d|-i] [-p PREFIX] [-D] [-r]
+install.sh [-d|-i] [-p PREFIX] [-D] [-r] [-x]
 
  d : only download
  i : only install

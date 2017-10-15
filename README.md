@@ -13,6 +13,7 @@ Requirements
 * g++
 * make
 * tar
+* bzip2
 * python 2.x
 * python-dev (for `install_python.sh`)
 

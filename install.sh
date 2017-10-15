@@ -14,6 +14,9 @@ MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
 LOG4CXX_VER="0.10.0"
 LOG4CXX_SUM="d79c053e8ac90f66c5e873b712bb359fd42b648d"
 
+EXPAT_VER="2.2.4"
+EXPAT_SUM="3394d6390c041a8f5dec1d5fe7c4af0a23ae4504"
+
 APR_VER="1.6.2"
 APR_SUM="20aa9eb9925637d54fe84b49d8497766cf0e11f0"
 
@@ -237,6 +240,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
 
     download_tgz https://github.com/msgpack/msgpack-c/releases/download/cpp-${MSG_VER}/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
+    download_tgz https://downloads.sourceforge.net/project/expat/expat/${EXPAT_VER}/expat-${EXPAT_VER}.tar.bz2 ${EXPAT_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
     download_github_tgz hillbig ux-trie ${UX_VER} ${UX_SUM}
@@ -271,6 +275,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     tar zxf msgpack-${MSG_VER}.tar.gz
     tar zxf apache-log4cxx-${LOG4CXX_VER}.tar.gz
+    tar jxf expat-${EXPAT_VER}.tar.bz2
     tar zxf apr-${APR_VER}.tar.gz
     tar zxf apr-util-${APR_UTIL_VER}.tar.gz
     tar zxf ux-trie-${UX_VER}.tar.gz
@@ -306,6 +311,11 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     pushd msgpack-${MSG_VER}
     ./configure --prefix=${PREFIX} && make clean && make && make install
+    check_result $?
+    popd
+
+    pushd expat-${EXPAT_VER}
+    ./configure --prefix=${PREFIX} --without-xmlwf && make clean && make && make install
     check_result $?
     popd
 

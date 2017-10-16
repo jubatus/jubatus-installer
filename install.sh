@@ -268,6 +268,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command g++
     check_command make
     check_command tar
+    check_command bzip2
     check_command python
     check_command sed
 

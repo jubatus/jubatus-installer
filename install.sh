@@ -2,11 +2,11 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="1.0.6"
-JUBATUS_SUM="6fc2a2a20e04ff3554df82e0f3e34ffd192804f2"
+JUBATUS_VER="1.0.7"
+JUBATUS_SUM="fd6ead77e61f3d834a7e1c788f9a5570b2a92d4e"
 
-JUBATUS_CORE_VER="1.0.6"
-JUBATUS_CORE_SUM="d624aa62ff89e6e5134c1b4858c7017db2e068bb"
+JUBATUS_CORE_VER="1.0.7"
+JUBATUS_CORE_SUM="44a20b60eac497a279766fab1f54c70df9e23a25"
 
 MSG_VER="0.5.9"
 MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
@@ -215,6 +215,16 @@ check_shasum_command() {
         exit 1
     fi
 }
+check_operation() {
+    if [ $1 -ne 0 ]; then
+        echo ""
+        echo "*************************************************************"
+        echo "Jubatus installation failed..."
+        echo "If the problem persists, try cleaning up ${PREFIX} directory."
+        echo "all messages above are saved in \"$INSTALL_LOG\""
+        exit $1
+    fi
+}
 
 makedir() {
     if [ -d $1 ]; then
@@ -229,37 +239,59 @@ makedir() {
 }
 
 export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log 
-(
+exec 3>&1
+exec > $INSTALL_LOG
+exec 2>&1
 if [ "${INSTALL_ONLY}" != "TRUE" ]
   then
     check_command wget
     check_shasum_command
 
     makedir download
+    (
+    echo "[Downloading archives]" 1>&3
     pushd download
 
+    echo "msgpack-${MSG_VER}.tar.gz" 1>&3
     download_tgz https://github.com/msgpack/msgpack-c/releases/download/cpp-${MSG_VER}/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
+    echo "apache-log4cxx-${LOG4CXX_VER}.tar.gz" 1>&3
     download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
+    echo "expat-${EXPAT_VER}.tar.bz2" 1>&3
     download_tgz https://downloads.sourceforge.net/project/expat/expat/${EXPAT_VER}/expat-${EXPAT_VER}.tar.bz2 ${EXPAT_SUM}
+    echo "apr-${APR_VER}.tar.gz" 1>&3
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
+    echo "apr-util-${APR_UTIL_VER}.tar.gz" 1>&3
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-util-${APR_UTIL_VER}.tar.gz ${APR_UTIL_SUM}
+    echo "ux-trie-${UX_VER}.tar.gz" 1>&3
     download_github_tgz hillbig ux-trie ${UX_VER} ${UX_SUM}
+    echo "mecab-${MECAB_VER}.tar.gz" 1>&3
     download_tgz "${MECAB_URL}" ${MECAB_SUM} "mecab-${MECAB_VER}.tar.gz"
+    echo "mecab-ipadic-${IPADIC_VER}.tar.gz" 1>&3
     download_tgz "${IPADIC_URL}" ${IPADIC_SUM} "mecab-ipadic-${IPADIC_VER}.tar.gz"
+    echo "zookeeper-${ZK_VER}.tar.gz" 1>&3
     download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
+    echo "pkg-config-${PKG_VER}.tar.gz" 1>&3
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
     if [ "${USE_RE2}" == "TRUE" ]; then
+      echo "re2-${RE2_VER}.tar.gz" 1>&3
       download_github_tgz google re2 ${RE2_VER} ${RE2_SUM}
     else
+      echo "onig-${ONIG_VER}.tar.gz" 1>&3
       download_tgz https://github.com/kkos/oniguruma/releases/download/v${ONIG_VER}/onig-${ONIG_VER}.tar.gz ${ONIG_SUM}
     fi
 
+    echo "jubatus-mpio-${JUBATUS_MPIO_VER}.tar.gz" 1>&3
     download_from_proper_location_tgz jubatus jubatus-mpio ${JUBATUS_MPIO_VER} ${JUBATUS_MPIO_SUM}
+    echo "jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}.tar.gz" 1>&3
     download_from_proper_location_tgz jubatus jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER} ${JUBATUS_MSGPACK_RPC_SUM}
+    echo "jubatus_core-${JUBATUS_CORE_VER}.tar.gz" 1>&3
     download_github_tgz jubatus jubatus_core ${JUBATUS_CORE_VER} ${JUBATUS_CORE_SUM}
+    echo "jubatus-${JUBATUS_VER}.tar.gz" 1>&3
     download_github_tgz jubatus jubatus ${JUBATUS_VER} ${JUBATUS_SUM}
 
     popd
+    )
+    check_operation $? 1>&3
 fi
 
 if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
@@ -272,6 +304,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_command python
     check_command sed
 
+    (
+    echo "[Installing dependencies]" 1>&3
     pushd download
 
     tar zxf msgpack-${MSG_VER}.tar.gz
@@ -305,31 +339,37 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     export C_INCLUDE_PATH="${PREFIX}/include"
     export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
+    echo "Installing pkg-config-${PKG_VER}" 1>&3
     pushd pkg-config-${PKG_VER}
     ./configure --prefix=${PREFIX} --with-internal-glib && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing msgpack-${MSG_VER}" 1>&3
     pushd msgpack-${MSG_VER}
     ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing expat-${EXPAT_VER}" 1>&3
     pushd expat-${EXPAT_VER}
     ./configure --prefix=${PREFIX} --without-xmlwf && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing apr-${APR_VER}" 1>&3
     pushd apr-${APR_VER}
     ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing apr-util-${APR_UTIL_VER}" 1>&3
     pushd apr-util-${APR_UTIL_VER}
     ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing apache-log4cxx-${LOG4CXX_VER}" 1>&3
     pushd apache-log4cxx-${LOG4CXX_VER}
     sed -i '18i#include <string.h>' src/main/cpp/inputstreamreader.cpp
     sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
@@ -339,16 +379,19 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
     popd
 
+    echo "Installing ux-trie-${UX_VER}" 1>&3
     pushd ux-trie-${UX_VER}
     ./waf configure --prefix=${PREFIX} && ./waf clean && ./waf build && ./waf install
     check_result $?
     popd
 
+    echo "Installing mecab-${MECAB_VER}" 1>&3
     pushd mecab-${MECAB_VER}
     ./configure --prefix=${PREFIX} --enable-utf8-only && make clean && make && make install
     check_result $?
     popd
 
+    echo "Installing mecab-ipadic-${IPADIC_VER}" 1>&3
     pushd mecab-ipadic-${IPADIC_VER}
     MECAB_CONFIG="$PREFIX/bin/mecab-config"
     MECAB_DICDIR=`$MECAB_CONFIG --dicdir`
@@ -357,28 +400,37 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     if [ "${USE_RE2}" == "TRUE" ]; then
-      pushd re2-${RE2_VER}
-      sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
-      make clean && make && make install
-      check_result $?
+     echo "Installing re2-${RE2_VER}" 1>&3
+     pushd re2-${RE2_VER}
+     sed -i -e "s|/usr/local|${PREFIX}/|g" Makefile
+     make clean && make && make install
+     check_result $?
     else
-      pushd onig-${ONIG_VER}
-      ./configure --prefix=${PREFIX} && make clean && make && make install
-      check_result $?
+     echo "Installing onig-${ONIG_VER}" 1>&3
+     pushd onig-${ONIG_VER}
+     ./configure --prefix=${PREFIX} && make clean && make && make install
+     check_result $?
     fi
     popd
 
+    echo "Installing zookeeper-${ZK_VER}" 1>&3
     pushd zookeeper-${ZK_VER}/src/c
     ./configure --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
+    popd
 
+    pushd download
+    echo "[Installing jubatus-components]" 1>&3
+    echo "Installing jubatus-mpio-${JUBATUS_MPIO_VER}" 1>&3
     build_properly jubatus-mpio ${JUBATUS_MPIO_VER}
     check_result $?
 
+    echo "Installing jubatus-msgpack-rpc-${JUBATUS_MSGPACK_RPC_VER}" 1>&3
     build_properly jubatus-msgpack-rpc ${JUBATUS_MSGPACK_RPC_VER}
     check_result $?
 
+    echo "Installing jubatus-core-${JUBATUS_CORE_VER}" 1>&3
     pushd jubatus_core-${JUBATUS_CORE_VER}
     CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib"
     if [ "${USE_RE2}" == "TRUE" ]; then
@@ -395,6 +447,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     check_result $?
     popd
 
+    echo "Installing jubatus-${JUBATUS_VER}" 1>&3
     pushd jubatus-${JUBATUS_VER}
     CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib --enable-ux --enable-mecab --enable-zookeeper"
     if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
@@ -431,22 +484,13 @@ export DYLD_LIBRARY_PATH=\$JUBATUS_HOME/lib
 PKG_CONFIG_PATH=\$JUBATUS_HOME/lib/pkgconfig
 export PKG_CONFIG_PATH
 EOF
-
+    )
+    check_operation $? 1>&3
 fi
 
-) 2>&1 | tee $INSTALL_LOG
 
-# to avoid getting the exit status of "tee" command
-status=${PIPESTATUS[0]}
+exec 1>&3
 
-if [ "$status" -ne 0 ]; then
-  echo ""
-  echo "*************************************************************"
-  echo "Jubatus installation failed..."
-  echo "If the problem persists, try cleaning up ${PREFIX} directory."
-  echo "all messages above are saved in \"$INSTALL_LOG\""
-  exit $status
-fi
 
 cat << _EOF_
 

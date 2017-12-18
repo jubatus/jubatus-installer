@@ -1,3 +1,9 @@
+2017-12-18 version 1.0.7:
+
+	* Install Jubatus version 1.0.7
+	* Update jubatus_core version 1.0.7
+	* Update zookeeper version 3.4.11
+
 2017-10-30 version 1.0.6:
 
 	* Install Jubatus version 1.0.6

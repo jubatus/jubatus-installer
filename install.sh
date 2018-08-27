@@ -2,11 +2,11 @@
 
 PREFIX="${HOME}/local"
 
-JUBATUS_VER="1.0.9"
-JUBATUS_SUM="bb6b487da004ecac0b2339fbb8ffe70ee0cd5eb6"
+JUBATUS_VER="1.1.0"
+JUBATUS_SUM="c8dcf3f48c1420c2af69baf44310431dcb57bec5"
 
-JUBATUS_CORE_VER="1.0.9"
-JUBATUS_CORE_SUM="f62a423f4b5533a6919dd9575d93a7d8b69cf5dc"
+JUBATUS_CORE_VER="1.1.0"
+JUBATUS_CORE_SUM="cb31708ac2ff2687e443cd9a24a87133deb9670a"
 
 MSG_VER="0.5.9"
 MSG_SUM="6efcd01f30b3b6a816887e3c543c8eba6dcfcb25"
@@ -159,7 +159,7 @@ build_properly() {
         ./bootstrap
     fi
 
-    ./configure --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
     local retval=$?
     popd
     popd
@@ -341,31 +341,31 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     echo "Installing pkg-config-${PKG_VER}" 1>&3
     pushd pkg-config-${PKG_VER}
-    ./configure --prefix=${PREFIX} --with-internal-glib && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --with-internal-glib && make clean && make && make install
     check_result $?
     popd
 
     echo "Installing msgpack-${MSG_VER}" 1>&3
     pushd msgpack-${MSG_VER}
-    ./configure --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
     echo "Installing expat-${EXPAT_VER}" 1>&3
     pushd expat-${EXPAT_VER}
-    ./configure --prefix=${PREFIX} --without-xmlwf && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --without-xmlwf && make clean && make && make install
     check_result $?
     popd
 
     echo "Installing apr-${APR_VER}" 1>&3
     pushd apr-${APR_VER}
-    ./configure --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
     echo "Installing apr-util-${APR_UTIL_VER}" 1>&3
     pushd apr-util-${APR_UTIL_VER}
-    ./configure --prefix=${PREFIX} --with-apr=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --with-apr=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
@@ -375,7 +375,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     sed -i '18i#include <string.h>' src/main/cpp/socketoutputstream.cpp
     sed -i '19i#include <string.h>' src/examples/cpp/console.cpp
     sed -i '20i#include <stdio.h>' src/examples/cpp/console.cpp
-    ./configure --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
 
@@ -387,7 +387,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     echo "Installing mecab-${MECAB_VER}" 1>&3
     pushd mecab-${MECAB_VER}
-    ./configure --prefix=${PREFIX} --enable-utf8-only && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --enable-utf8-only && make clean && make && make install
     check_result $?
     popd
 
@@ -395,7 +395,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     pushd mecab-ipadic-${IPADIC_VER}
     MECAB_CONFIG="$PREFIX/bin/mecab-config"
     MECAB_DICDIR=`$MECAB_CONFIG --dicdir`
-    ./configure --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --with-mecab-config=$MECAB_CONFIG --with-dicdir=$MECAB_DICDIR/ipadic --with-charset=utf-8 && make clean && make && make install
     check_result $?
     popd
 
@@ -408,14 +408,14 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     else
      echo "Installing onig-${ONIG_VER}" 1>&3
      pushd onig-${ONIG_VER}
-     ./configure --prefix=${PREFIX} && make clean && make && make install
+     ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
      check_result $?
     fi
     popd
 
     echo "Installing zookeeper-${ZK_VER}" 1>&3
     pushd zookeeper-${ZK_VER}/src/c
-    ./configure --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
     popd
@@ -432,7 +432,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     echo "Installing jubatus-core-${JUBATUS_CORE_VER}" 1>&3
     pushd jubatus_core-${JUBATUS_CORE_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib"
+    CONFIGURE_OPT="CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --libdir=${PREFIX}/lib"
     if [ "${USE_RE2}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --regexp-library=re2"
     fi
@@ -449,7 +449,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     echo "Installing jubatus-${JUBATUS_VER}" 1>&3
     pushd jubatus-${JUBATUS_VER}
-    CONFIGURE_OPT="--prefix=${PREFIX} --libdir=${PREFIX}/lib --enable-ux --enable-mecab --enable-zookeeper"
+    CONFIGURE_OPT="CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} --libdir=${PREFIX}/lib --enable-ux --enable-mecab --enable-zookeeper"
     if [ "${ENABLE_DEBUG}" == "TRUE" ]; then
       CONFIGURE_OPT="${CONFIGURE_OPT} --enable-debug"
     fi

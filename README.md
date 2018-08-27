@@ -19,7 +19,7 @@ Requirements
 
 Due to the limitation of some libraries, jubatus-installer may fail when used with Python 3.x.
 Please make sure that your `python` command points to Python 2.x.
-If you are on Ubuntu 16.04 and you don't have `python` command, run `sudo apt-get install python2.7`.
+If you are on Ubuntu 16.04 or 18.04 and you don't have `python` command, run `sudo apt-get install python2.7`.
 
 Usage
 -----

@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-PYTHON_VER="2.7.2"
+PYTHON_VER="2.7.15"
 PREFIX="${HOME}/local"
 
 
@@ -8,7 +8,6 @@ PREFIX="${HOME}/local"
   pushd download
 
   wget http://www.python.org/ftp/python/${PYTHON_VER}/Python-${PYTHON_VER}.tgz
-  wget http://peak.telecommunity.com/dist/ez_setup.py
 
   tar zxf Python-${PYTHON_VER}.tgz
 
@@ -19,8 +18,9 @@ PREFIX="${HOME}/local"
   popd
 
   export PATH=${PREFIX}/bin/:$PATH
-  python ez_setup.py
-  easy_install pip
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  python get-pip.py
+  pip install wheel
   pip install jubatus
   pip install msgpack-rpc-python
 

@@ -1,3 +1,8 @@
+2019-03-25 version 1.1.1-p1:
+
+	* Fix install_python.sh to work
+	* Update zookeeper version 3.4.13
+
 2019-01-28 version 1.1.1:
 
 	* Install Jubatus version 1.1.1

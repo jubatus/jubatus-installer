@@ -34,8 +34,8 @@ IPADIC_VER="2.7.0-20070801"
 IPADIC_SUM="0d9d021853ba4bb4adfa782ea450e55bfe1a229b"
 IPADIC_URL="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM"
 
-ZK_VER="3.4.12"
-ZK_SUM="8e2cc8784794e24df90fa1a9dbe6cd1695c79a44"
+ZK_VER="3.4.13"
+ZK_SUM="a989b527f3f990d471e6d47ee410e57d8be7620b"
 
 PKG_VER="0.28"
 PKG_SUM="71853779b12f958777bffcb8ca6d849b4d3bed46"
@@ -238,7 +238,7 @@ makedir() {
     fi
 }
 
-export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log 
+export INSTALL_LOG=install.`date +%Y%m%d`.`date +%H%M`.log
 exec 3>&1
 exec > $INSTALL_LOG
 exec 2>&1

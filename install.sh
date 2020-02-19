@@ -415,7 +415,7 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
 
     echo "Installing zookeeper-${ZK_VER}" 1>&3
     pushd zookeeper-${ZK_VER}/zookeeper-client/zookeeper-client-c
-    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
+    ./configure CXXFLAGS=-std=gnu++98 CFLAGS=-Wno-error=format-overflow --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
     popd

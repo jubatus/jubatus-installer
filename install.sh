@@ -34,8 +34,8 @@ IPADIC_VER="2.7.0-20070801"
 IPADIC_SUM="0d9d021853ba4bb4adfa782ea450e55bfe1a229b"
 IPADIC_URL="https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM"
 
-ZK_VER="3.4.13"
-ZK_SUM="a989b527f3f990d471e6d47ee410e57d8be7620b"
+ZK_VER="3.4.14"
+ZK_SUM="285a0c85112d9f99d42cbbf8fb750c9aa5474716"
 
 PKG_VER="0.28"
 PKG_SUM="71853779b12f958777bffcb8ca6d849b4d3bed46"
@@ -269,7 +269,7 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     echo "mecab-ipadic-${IPADIC_VER}.tar.gz" 1>&3
     download_tgz "${IPADIC_URL}" ${IPADIC_SUM} "mecab-ipadic-${IPADIC_VER}.tar.gz"
     echo "zookeeper-${ZK_VER}.tar.gz" 1>&3
-    download_tgz http://ftp.riken.jp/net/apache/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
+    download_tgz https://archive.apache.org/dist/zookeeper/zookeeper-${ZK_VER}/zookeeper-${ZK_VER}.tar.gz ${ZK_SUM}
     echo "pkg-config-${PKG_VER}.tar.gz" 1>&3
     download_tgz http://pkgconfig.freedesktop.org/releases/pkg-config-${PKG_VER}.tar.gz ${PKG_SUM}
     if [ "${USE_RE2}" == "TRUE" ]; then
@@ -414,8 +414,8 @@ if [ "${DOWNLOAD_ONLY}" != "TRUE" ]
     popd
 
     echo "Installing zookeeper-${ZK_VER}" 1>&3
-    pushd zookeeper-${ZK_VER}/src/c
-    ./configure CXXFLAGS=-std=gnu++98 --prefix=${PREFIX} && make clean && make && make install
+    pushd zookeeper-${ZK_VER}/zookeeper-client/zookeeper-client-c
+    ./configure CXXFLAGS=-std=gnu++98 CFLAGS=-Wno-error --prefix=${PREFIX} && make clean && make && make install
     check_result $?
     popd
     popd

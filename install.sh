@@ -255,9 +255,9 @@ if [ "${INSTALL_ONLY}" != "TRUE" ]
     echo "msgpack-${MSG_VER}.tar.gz" 1>&3
     download_tgz https://github.com/msgpack/msgpack-c/releases/download/cpp-${MSG_VER}/msgpack-${MSG_VER}.tar.gz ${MSG_SUM}
     echo "apache-log4cxx-${LOG4CXX_VER}.tar.gz" 1>&3
-    download_tgz http://ftp.riken.jp/net/apache/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
+    download_tgz https://archive.apache.org/dist/logging/log4cxx/${LOG4CXX_VER}/apache-log4cxx-${LOG4CXX_VER}.tar.gz ${LOG4CXX_SUM}
     echo "expat-${EXPAT_VER}.tar.bz2" 1>&3
-    download_tgz https://downloads.sourceforge.net/project/expat/expat/${EXPAT_VER}/expat-${EXPAT_VER}.tar.bz2 ${EXPAT_SUM}
+    download_tgz https://github.com/libexpat/libexpat/releases/download/R_${EXPAT_VER//\./_}/expat-${EXPAT_VER}.tar.bz2 ${EXPAT_SUM}
     echo "apr-${APR_VER}.tar.gz" 1>&3
     download_tgz http://ftp.riken.jp/net/apache//apr/apr-${APR_VER}.tar.gz ${APR_SUM}
     echo "apr-util-${APR_UTIL_VER}.tar.gz" 1>&3
